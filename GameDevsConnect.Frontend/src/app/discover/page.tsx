@@ -55,7 +55,8 @@ export default async function DiscoverPage({
                   {project.title}
                 </Link>
                 <p className="m-0 mt-1 text-sm text-text-muted">
-                  {project.genre} · {project.engine} · {project.status}
+                  {project.genres.map((g) => g.name).join(", ") || "Kein Genre"} · {project.engineName ?? "Keine Engine"} ·{" "}
+                  {project.status}
                 </p>
                 {project.tags.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-2">

@@ -3,21 +3,16 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import { Trash2 } from "lucide-react";
 import type { Engine, Genre, GitHubRepo, Project, ProjectStatus, ProjectVisibility } from "@/lib/types";
 import { BackLink, Button, Input, MarkdownEditor, PageContainer, Select } from "@/components/ui";
 
 const STATUSES: ProjectStatus[] = ["Concept", "InDevelopment", "Beta", "Released", "Archived"];
 
-export function ProjectSettingsForm({
-  project,
-  isOwner,
+export function NewProjectForm({
   engines,
   genres,
   repos,
 }: {
-  project: Project;
-  isOwner: boolean;
   engines: Engine[];
   genres: Genre[];
   repos: GitHubRepo[] | null;
@@ -25,17 +20,25 @@ export function ProjectSettingsForm({
   const router = useRouter();
   const bannerInputRef = useRef<HTMLInputElement>(null);
 
-  const [title, setTitle] = useState(project.title);
-  const [repoFullName, setRepoFullName] = useState(project.gitHubRepoFullName ?? "");
-  const [bannerUrl, setBannerUrl] = useState(project.bannerUrl);
+  const [repoFullName, setRepoFullName] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [bannerUrl, setBannerUrl] = useState<string | null>(null);
   const [bannerUploading, setBannerUploading] = useState(false);
-  const [description, setDescription] = useState(project.description ?? "");
-  const [engineId, setEngineId] = useState(project.engineId ?? "");
-  const [genreIds, setGenreIds] = useState<string[]>(project.genres.map((g) => g.id));
-  const [status, setStatus] = useState<ProjectStatus>(project.status);
-  const [visibility, setVisibility] = useState<ProjectVisibility>(project.visibility);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [engineId, setEngineId] = useState("");
+  const [genreIds, setGenreIds] = useState<string[]>([]);
+  const [status, setStatus] = useState<ProjectStatus>("Concept");
+  const [visibility, setVisibility] = useState<ProjectVisibility>("Public");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  function handleRepoChange(fullName: string) {
+    setRepoFullName(fullName);
+    if (fullName && title.trim() === "") {
+      const repo = repos?.find((r) => r.fullName === fullName);
+      if (repo) setTitle(repo.name);
+    }
+  }
 
   function toggleGenre(id: string) {
     setGenreIds((prev) => (prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id]));
@@ -46,13 +49,13 @@ export function ProjectSettingsForm({
     e.target.value = "";
     if (!file) return;
     setBannerUploading(true);
-    setMessage(null);
+    setError(null);
     try {
       const formData = new FormData();
       formData.append("file", file);
       const res = await fetch("/api/uploads/images", { method: "POST", credentials: "include", body: formData });
       if (!res.ok) {
-        setMessage("Bild-Upload fehlgeschlagen.");
+        setError("Bild-Upload fehlgeschlagen.");
         return;
       }
       const { url } = (await res.json()) as { url: string };
@@ -62,18 +65,18 @@ export function ProjectSettingsForm({
     }
   }
 
-  async function handleSave(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSaving(true);
-    setMessage(null);
+    setSubmitting(true);
+    setError(null);
     try {
-      const res = await fetch(`/api/projects/${project.slug}`, {
-        method: "PATCH",
+      const res = await fetch("/api/projects", {
+        method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title,
-          description,
+          description: description || null,
           bannerUrl,
           engineId: engineId || null,
           genreIds,
@@ -82,43 +85,27 @@ export function ProjectSettingsForm({
           visibility,
         }),
       });
-      if (res.ok) {
-        router.push(`/projects/${project.slug}`);
+      if (!res.ok) {
+        setError("Projekt konnte nicht erstellt werden.");
         return;
       }
-      setMessage("Speichern fehlgeschlagen.");
+      const project = (await res.json()) as Project;
+      router.push(`/projects/${project.slug}`);
     } finally {
-      setSaving(false);
+      setSubmitting(false);
     }
-  }
-
-  async function handleDelete() {
-    if (!confirm(`Projekt "${project.title}" wirklich löschen?`)) return;
-    const res = await fetch(`/api/projects/${project.slug}`, { method: "DELETE", credentials: "include" });
-    if (res.ok) router.push("/");
-    else setMessage("Löschen fehlgeschlagen.");
   }
 
   return (
     <PageContainer>
       <div className="mb-6 flex items-center gap-2">
-        <BackLink fallbackHref={`/projects/${project.slug}`} />
-        <h1 className="font-display text-sm text-accent-bright">PROJEKT-EINSTELLUNGEN</h1>
-        {isOwner && (
-          <button
-            type="button"
-            aria-label="Projekt löschen"
-            title="Projekt löschen"
-            onClick={handleDelete}
-            className="ml-auto flex h-9 w-9 items-center justify-center rounded-md border-2 border-danger text-danger transition-colors hover:bg-danger hover:text-surface"
-          >
-            <Trash2 size={18} />
-          </button>
-        )}
+        <BackLink fallbackHref="/" />
+        <h1 className="font-display text-sm text-accent-bright">NEUES PROJEKT</h1>
       </div>
-      <form onSubmit={handleSave}>
+      <form onSubmit={handleSubmit}>
         {/* Simple fields stay at a normal form width even though the page itself is
-            wide - only the description editor below benefits from the extra room. */}
+            wide - only the banner and description editor below benefit from the
+            extra room. */}
         <div className="mx-auto max-w-3xl">
           <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
@@ -126,7 +113,7 @@ export function ProjectSettingsForm({
               <Select
                 id="repo"
                 value={repoFullName}
-                onChange={(e) => setRepoFullName(e.target.value)}
+                onChange={(e) => handleRepoChange(e.target.value)}
                 disabled={!repos || repos.length === 0}
               >
                 <option value="">Kein Repo verknüpfen</option>
@@ -149,7 +136,7 @@ export function ProjectSettingsForm({
 
             <div>
               <label htmlFor="title" className="mb-1 block text-sm text-text-muted">Titel</label>
-              <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+              <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
             </div>
           </div>
 
@@ -226,10 +213,11 @@ export function ProjectSettingsForm({
         <label className="mb-1 block text-sm text-text-muted">Beschreibung</label>
         <MarkdownEditor value={description} onChange={setDescription} maxLength={5000} maxUploads={10} className="mb-4" />
 
-        <Button type="submit" disabled={saving}>{saving ? "Speichere..." : "Speichern"}</Button>
+        <Button type="submit" disabled={submitting}>
+          {submitting ? "Erstelle..." : "Projekt erstellen"}
+        </Button>
+        {error && <p className="mt-3 text-sm text-danger">{error}</p>}
       </form>
-
-      {message && <p className="mx-auto mt-3 max-w-3xl text-sm text-text-muted">{message}</p>}
     </PageContainer>
   );
 }

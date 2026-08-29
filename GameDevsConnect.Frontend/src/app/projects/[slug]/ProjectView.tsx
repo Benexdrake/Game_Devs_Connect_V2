@@ -6,7 +6,7 @@ import { useState } from "react";
 import clsx from "clsx";
 import type { ActivityEvent, CurrentUser, Post, Project, ProjectRole, Quest } from "@/lib/types";
 import { FollowButton } from "@/app/FollowButton";
-import { Badge, Button, Input, PageContainer, Panel, Select, Textarea } from "@/components/ui";
+import { BackLink, Badge, Button, Input, MarkdownContent, PageContainer, Panel, Select, Textarea } from "@/components/ui";
 
 type Tab = "overview" | "team" | "quests" | "posts" | "activity";
 
@@ -188,10 +188,26 @@ export function ProjectView({
         // eslint-disable-next-line @next/next/no-img-element
         <img src={project.bannerUrl} alt="" className="mb-4 h-48 w-full rounded-lg object-cover" />
       )}
-      <h1 className="mb-1 font-display text-base text-accent-bright">{project.title}</h1>
+      <div className="mb-1 flex items-center gap-2">
+        <BackLink fallbackHref="/discover" />
+        <h1 className="font-display text-base text-accent-bright">{project.title}</h1>
+      </div>
       <p className="mb-2 text-sm text-text-muted">
-        {project.genre} · {project.engine} · {project.status} · {project.visibility}
+        {project.genres.map((g) => g.name).join(", ") || "Kein Genre"} · {project.engineName ?? "Keine Engine"} ·{" "}
+        {project.status} · {project.visibility}
       </p>
+      {project.gitHubRepoFullName && (
+        <p className="mb-2 text-sm">
+          <a
+            href={`https://github.com/${project.gitHubRepoFullName}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent hover:text-accent-bright"
+          >
+            {project.gitHubRepoFullName}
+          </a>
+        </p>
+      )}
       <div className="mb-4 flex items-center gap-3">
         {canManage && (
           <Link href={`/projects/${project.slug}/settings`} className="text-accent hover:text-accent-bright">
@@ -225,7 +241,7 @@ export function ProjectView({
 
       {tab === "overview" && (
         <section>
-          <p>{project.description}</p>
+          {project.description ? <MarkdownContent>{project.description}</MarkdownContent> : null}
           {project.tags.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
               {project.tags.map((t) => (

@@ -1,16 +1,57 @@
 export type SkillCategory =
   | "Programming"
+  | "Engines"
   | "Art2D"
   | "Art3D"
   | "Animation"
   | "Audio"
   | "Design"
   | "Writing"
+  | "Production"
   | "Other";
+
+export const SKILL_CATEGORY_LABELS: Record<SkillCategory, string> = {
+  Programming: "Programming",
+  Engines: "Engines",
+  Art2D: "2D Art",
+  Art3D: "3D Art",
+  Animation: "Animation",
+  Audio: "Audio",
+  Design: "Design",
+  Writing: "Writing",
+  Production: "Production",
+  Other: "Other",
+};
 
 export type Skill = { id: string; name: string; category: SkillCategory };
 
-export type UserLink = { label: string; url: string };
+export type Engine = { id: string; name: string };
+
+export type Genre = { id: string; name: string };
+
+export type GitHubRepo = {
+  fullName: string;
+  name: string;
+  description: string | null;
+  private: boolean;
+  updatedAt: string;
+};
+
+export type LinkPlatform =
+  | "X"
+  | "GitHub"
+  | "LinkedIn"
+  | "Instagram"
+  | "YouTube"
+  | "Twitch"
+  | "Discord"
+  | "TikTok"
+  | "ItchIo"
+  | "Reddit"
+  | "Bluesky"
+  | "Other";
+
+export type UserLink = { platform: LinkPlatform; label: string | null; url: string };
 
 export type ProjectStatus = "Concept" | "InDevelopment" | "Beta" | "Released" | "Archived";
 export type ProjectVisibility = "Public" | "Private";
@@ -49,8 +90,10 @@ export type Project = {
   description: string | null;
   logoUrl: string | null;
   bannerUrl: string | null;
-  engine: string | null;
-  genre: string | null;
+  engineId: string | null;
+  engineName: string | null;
+  genres: Genre[];
+  gitHubRepoFullName: string | null;
   status: ProjectStatus;
   visibility: ProjectVisibility;
   tags: string[];
@@ -195,8 +238,8 @@ export type SearchProjectResult = {
   slug: string;
   title: string;
   logoUrl: string | null;
-  engine: string | null;
-  genre: string | null;
+  engineName: string | null;
+  genreNames: string[];
 };
 
 export type SearchQuestResult = {
