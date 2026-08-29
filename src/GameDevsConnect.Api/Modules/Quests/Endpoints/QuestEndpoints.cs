@@ -13,7 +13,6 @@ public record CreateQuestRequest(
     string? Description,
     SkillCategory Category,
     QuestDifficulty Difficulty,
-    int XpReward,
     DateTimeOffset? Deadline,
     int? MaxContributors,
     IReadOnlyList<Guid>? RequiredSkillIds);
@@ -23,7 +22,6 @@ public record UpdateQuestRequest(
     string? Description,
     SkillCategory? Category,
     QuestDifficulty? Difficulty,
-    int? XpReward,
     DateTimeOffset? Deadline,
     int? MaxContributors,
     IReadOnlyList<Guid>? RequiredSkillIds);
@@ -47,7 +45,7 @@ public static class QuestEndpoints
         {
             var result = await mediator.Send(
                 new CreateQuestCommand(slug, http.GetUserId(), body.Title, body.Description, body.Category,
-                    body.Difficulty, body.XpReward, body.Deadline, body.MaxContributors, body.RequiredSkillIds), ct);
+                    body.Difficulty, body.Deadline, body.MaxContributors, body.RequiredSkillIds), ct);
             return result.ToHttpResult();
         }).RequireAuthorization();
 
@@ -62,7 +60,7 @@ public static class QuestEndpoints
         {
             var result = await mediator.Send(
                 new UpdateQuestCommand(slug, questId, http.GetUserId(), body.Title, body.Description, body.Category,
-                    body.Difficulty, body.XpReward, body.Deadline, body.MaxContributors, body.RequiredSkillIds), ct);
+                    body.Difficulty, body.Deadline, body.MaxContributors, body.RequiredSkillIds), ct);
             return result.ToHttpResult();
         }).RequireAuthorization();
 

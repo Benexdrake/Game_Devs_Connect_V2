@@ -5,15 +5,22 @@ import { useState } from "react";
 import type { Skill } from "@/lib/types";
 
 const CATEGORIES = ["Programming", "Art2D", "Art3D", "Animation", "Audio", "Design", "Writing", "Other"];
-const DIFFICULTIES = ["Easy", "Medium", "Hard"];
+const DIFFICULTIES = ["Easy", "Medium", "Hard"] as const;
+
+// Mirrors QuestDifficultyXp.For on the backend - the server computes the
+// real value, this is only shown so the creator sees the reward up front.
+const XP_BY_DIFFICULTY: Record<(typeof DIFFICULTIES)[number], number> = {
+  Easy: 100,
+  Medium: 250,
+  Hard: 500,
+};
 
 export function NewQuestForm({ projectSlug, skills }: { projectSlug: string; skills: Skill[] }) {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0]);
-  const [difficulty, setDifficulty] = useState(DIFFICULTIES[0]);
-  const [xpReward, setXpReward] = useState(100);
+  const [difficulty, setDifficulty] = useState<(typeof DIFFICULTIES)[number]>(DIFFICULTIES[0]);
   const [maxContributors, setMaxContributors] = useState(1);
   const [selectedSkillIds, setSelectedSkillIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
@@ -37,7 +44,6 @@ export function NewQuestForm({ projectSlug, skills }: { projectSlug: string; ski
           description,
           category,
           difficulty,
-          xpReward,
           maxContributors,
           requiredSkillIds: selectedSkillIds,
         }),
@@ -91,7 +97,7 @@ export function NewQuestForm({ projectSlug, skills }: { projectSlug: string; ski
         <select
           id="difficulty"
           value={difficulty}
-          onChange={(e) => setDifficulty(e.target.value)}
+          onChange={(e) => setDifficulty(e.target.value as (typeof DIFFICULTIES)[number])}
           style={{ display: "block", width: "100%", marginBottom: "1rem" }}
         >
           {DIFFICULTIES.map((d) => (
@@ -99,13 +105,13 @@ export function NewQuestForm({ projectSlug, skills }: { projectSlug: string; ski
           ))}
         </select>
 
-        <label htmlFor="xpReward">XP Reward</label>
+        <label htmlFor="xpReward">XP Reward (durch Schwierigkeit festgelegt)</label>
         <input
           id="xpReward"
           type="number"
-          min={0}
-          value={xpReward}
-          onChange={(e) => setXpReward(Number(e.target.value))}
+          value={XP_BY_DIFFICULTY[difficulty]}
+          readOnly
+          disabled
           style={{ display: "block", width: "100%", marginBottom: "1rem" }}
         />
 

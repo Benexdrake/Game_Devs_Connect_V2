@@ -17,7 +17,6 @@ public record UpdateQuestCommand(
     string? Description,
     SkillCategory? Category,
     QuestDifficulty? Difficulty,
-    int? XpReward,
     DateTimeOffset? Deadline,
     int? MaxContributors,
     IReadOnlyList<Guid>? RequiredSkillIds) : IRequest<Result<QuestDto>>;
@@ -52,8 +51,11 @@ public class UpdateQuestCommandHandler(AppDbContext db) : IRequestHandler<Update
         if (request.Title is not null) quest.Title = request.Title;
         if (request.Description is not null) quest.Description = request.Description;
         if (request.Category is not null) quest.Category = request.Category.Value;
-        if (request.Difficulty is not null) quest.Difficulty = request.Difficulty.Value;
-        if (request.XpReward is not null) quest.XpReward = request.XpReward.Value;
+        if (request.Difficulty is not null)
+        {
+            quest.Difficulty = request.Difficulty.Value;
+            quest.XpReward = QuestDifficultyXp.For(request.Difficulty.Value);
+        }
         if (request.Deadline is not null) quest.Deadline = request.Deadline;
         if (request.MaxContributors is > 0) quest.MaxContributors = request.MaxContributors.Value;
 

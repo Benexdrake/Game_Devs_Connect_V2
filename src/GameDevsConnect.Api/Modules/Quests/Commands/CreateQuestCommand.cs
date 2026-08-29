@@ -16,7 +16,6 @@ public record CreateQuestCommand(
     string? Description,
     SkillCategory Category,
     QuestDifficulty Difficulty,
-    int XpReward,
     DateTimeOffset? Deadline,
     int? MaxContributors,
     IReadOnlyList<Guid>? RequiredSkillIds) : IRequest<Result<QuestDto>>;
@@ -52,7 +51,7 @@ public class CreateQuestCommandHandler(AppDbContext db) : IRequestHandler<Create
             Description = request.Description,
             Category = request.Category,
             Difficulty = request.Difficulty,
-            XpReward = request.XpReward,
+            XpReward = QuestDifficultyXp.For(request.Difficulty),
             Status = QuestStatus.Open,
             Deadline = request.Deadline,
             MaxContributors = request.MaxContributors is > 0 ? request.MaxContributors.Value : 1,

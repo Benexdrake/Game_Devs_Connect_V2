@@ -9,6 +9,19 @@ public enum QuestDifficulty
     Hard,
 }
 
+public static class QuestDifficultyXp
+{
+    // Fixed per difficulty - not settable by the quest creator, otherwise a
+    // project owner could self-inflate XP payouts for quests they control.
+    public static int For(QuestDifficulty difficulty) => difficulty switch
+    {
+        QuestDifficulty.Easy => 100,
+        QuestDifficulty.Medium => 250,
+        QuestDifficulty.Hard => 500,
+        _ => throw new ArgumentOutOfRangeException(nameof(difficulty)),
+    };
+}
+
 public enum QuestStatus
 {
     Open,
