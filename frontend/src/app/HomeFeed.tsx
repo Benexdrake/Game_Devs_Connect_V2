@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ActivityEvent, CurrentUser } from "@/lib/types";
+import { Button, PageContainer, Panel } from "@/components/ui";
 
 export function HomeFeed({ me, feed }: { me: CurrentUser; feed: ActivityEvent[] }) {
   const router = useRouter();
@@ -14,47 +15,57 @@ export function HomeFeed({ me, feed }: { me: CurrentUser; feed: ActivityEvent[] 
   }
 
   return (
-    <main style={{ maxWidth: 640, margin: "0 auto", padding: "2rem 1rem" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1rem" }}>
+    <PageContainer>
+      <div className="mb-4 flex items-center gap-3">
         {me.avatarUrl && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={me.avatarUrl} alt={me.username} width={40} height={40} style={{ borderRadius: "50%" }} />
+          <img src={me.avatarUrl} alt={me.username} width={40} height={40} className="rounded-full" />
         )}
-        <p style={{ margin: 0 }}>Angemeldet als {me.username}</p>
+        <p className="m-0">
+          Angemeldet als <span className="font-medium text-accent-bright">{me.username}</span>
+        </p>
       </div>
 
-      <nav style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
-        <Link href={`/users/${me.username}`}>Mein Profil</Link>
-        <Link href="/settings/profile">Profil bearbeiten</Link>
-        <Link href="/projects/new">Neues Projekt</Link>
-        <Link href="/quests">Quests entdecken</Link>
-        <button type="button" onClick={handleLogout}>
+      <nav className="mb-6 flex flex-wrap items-center gap-4 text-sm">
+        <Link href={`/users/${me.username}`} className="text-accent hover:text-accent-bright">
+          Mein Profil
+        </Link>
+        <Link href="/settings/profile" className="text-accent hover:text-accent-bright">
+          Profil bearbeiten
+        </Link>
+        <Link href="/projects/new" className="text-accent hover:text-accent-bright">
+          Neues Projekt
+        </Link>
+        <Link href="/quests" className="text-accent hover:text-accent-bright">
+          Quests entdecken
+        </Link>
+        <Button type="button" variant="ghost" onClick={handleLogout}>
           Logout
-        </button>
+        </Button>
       </nav>
 
-      <h2>Dein Feed</h2>
+      <h2 className="mb-3 font-display text-xs text-accent-bright">DEIN FEED</h2>
       {feed.length === 0 ? (
-        <p>
+        <Panel className="text-text-muted">
           Noch nichts zu sehen. Folge Usern oder Projekten, um ihre neuen Quests und angenommenen Contributions hier
           zu sehen.
-        </p>
+        </Panel>
       ) : (
-        <ul style={{ listStyle: "none", padding: 0 }}>
+        <ul className="list-none space-y-2 p-0">
           {feed.map((event) => (
-            <li key={event.id} style={{ borderBottom: "1px solid #eee", padding: "0.75rem 0" }}>
+            <li key={event.id} className="border-b border-border py-3">
               {event.linkUrl ? (
-                <Link href={event.linkUrl} style={{ margin: 0 }}>
+                <Link href={event.linkUrl} className="text-text hover:text-accent-bright">
                   {event.summary}
                 </Link>
               ) : (
-                <p style={{ margin: 0 }}>{event.summary}</p>
+                <p className="m-0">{event.summary}</p>
               )}
-              <p style={{ margin: 0, fontSize: "0.8em", color: "#888" }}>{new Date(event.createdAt).toLocaleString()}</p>
+              <p className="m-0 text-xs text-text-muted">{new Date(event.createdAt).toLocaleString()}</p>
             </li>
           ))}
         </ul>
       )}
-    </main>
+    </PageContainer>
   );
 }

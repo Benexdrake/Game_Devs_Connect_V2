@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { CurrentUser, Skill, UserLink, UserProfile } from "@/lib/types";
+import { Button, Input, PageContainer, Textarea } from "@/components/ui";
 
 export default function ProfileSettingsPage() {
   const [me, setMe] = useState<CurrentUser | null>(null);
@@ -91,8 +92,8 @@ export default function ProfileSettingsPage() {
     }
   }
 
-  if (loading) return <main style={{ padding: "2rem" }}>Lade...</main>;
-  if (!me) return <main style={{ padding: "2rem" }}>Bitte zuerst einloggen.</main>;
+  if (loading) return <PageContainer className="text-text-muted">Lade...</PageContainer>;
+  if (!me) return <PageContainer className="text-text-muted">Bitte zuerst einloggen.</PageContainer>;
 
   const skillsByCategory = allSkills.reduce<Record<string, Skill[]>>((acc, skill) => {
     (acc[skill.category] ??= []).push(skill);
@@ -100,62 +101,50 @@ export default function ProfileSettingsPage() {
   }, {});
 
   return (
-    <main style={{ maxWidth: 640, margin: "0 auto", padding: "2rem 1rem" }}>
-      <h1>Profil bearbeiten</h1>
+    <PageContainer>
+      <h1 className="mb-6 font-display text-sm text-accent-bright">PROFIL BEARBEITEN</h1>
 
-      <label htmlFor="bio">Bio</label>
-      <textarea
-        id="bio"
-        value={bio}
-        onChange={(e) => setBio(e.target.value)}
-        rows={4}
-        style={{ width: "100%", display: "block", marginBottom: "1rem" }}
-      />
+      <label htmlFor="bio" className="mb-1 block text-sm text-text-muted">Bio</label>
+      <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={4} className="mb-6" />
 
-      <h2>Links</h2>
+      <h2 className="mb-2 font-display text-xs text-accent-bright">LINKS</h2>
       {links.map((link, index) => (
-        <div key={index} style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
-          <input
-            placeholder="Label"
-            value={link.label}
-            onChange={(e) => updateLink(index, "label", e.target.value)}
-          />
-          <input
-            placeholder="URL"
-            value={link.url}
-            onChange={(e) => updateLink(index, "url", e.target.value)}
-            style={{ flex: 1 }}
-          />
-          <button type="button" onClick={() => removeLink(index)}>
+        <div key={index} className="mb-2 flex gap-2">
+          <Input placeholder="Label" value={link.label} onChange={(e) => updateLink(index, "label", e.target.value)} className="w-32" />
+          <Input placeholder="URL" value={link.url} onChange={(e) => updateLink(index, "url", e.target.value)} className="flex-1" />
+          <Button type="button" variant="danger" onClick={() => removeLink(index)}>
             Entfernen
-          </button>
+          </Button>
         </div>
       ))}
-      <button type="button" onClick={addLink}>
+      <Button type="button" variant="secondary" onClick={addLink}>
         + Link hinzufügen
-      </button>
+      </Button>
 
-      <h2>Skills</h2>
+      <h2 className="mb-2 mt-6 font-display text-xs text-accent-bright">SKILLS</h2>
       {Object.entries(skillsByCategory).map(([category, skills]) => (
-        <fieldset key={category} style={{ marginBottom: "0.5rem" }}>
-          <legend>{category}</legend>
-          {skills.map((skill) => (
-            <label key={skill.id} style={{ marginRight: "1rem" }}>
-              <input
-                type="checkbox"
-                checked={selectedSkillIds.has(skill.id)}
-                onChange={() => toggleSkill(skill.id)}
-              />{" "}
-              {skill.name}
-            </label>
-          ))}
+        <fieldset key={category} className="mb-3 rounded-md border border-border p-3">
+          <legend className="px-1 text-sm text-text-muted">{category}</legend>
+          <div className="flex flex-wrap gap-3">
+            {skills.map((skill) => (
+              <label key={skill.id} className="flex items-center gap-1.5 text-sm">
+                <input
+                  type="checkbox"
+                  checked={selectedSkillIds.has(skill.id)}
+                  onChange={() => toggleSkill(skill.id)}
+                  className="accent-accent"
+                />
+                {skill.name}
+              </label>
+            ))}
+          </div>
         </fieldset>
       ))}
 
-      <button type="button" onClick={handleSave} disabled={saving} style={{ marginTop: "1rem" }}>
+      <Button type="button" onClick={handleSave} disabled={saving} className="mt-4">
         {saving ? "Speichere..." : "Speichern"}
-      </button>
-      {message && <p>{message}</p>}
-    </main>
+      </Button>
+      {message && <p className="mt-3 text-sm text-text-muted">{message}</p>}
+    </PageContainer>
   );
 }

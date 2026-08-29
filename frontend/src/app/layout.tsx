@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Press_Start_2P } from "next/font/google";
 import { NotificationBell } from "./NotificationBell";
 import { SearchBar } from "./SearchBar";
 import "./globals.css";
@@ -15,6 +15,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const pressStart2P = Press_Start_2P({
+  variable: "--font-press-start",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "Gamedevs Connect",
   description: "The collaboration network for indie game developers.",
@@ -22,13 +28,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} ${pressStart2P.variable}`}
+    >
       <body>
-        <header style={{ padding: "0.75rem 1rem", borderBottom: "1px solid #ccc", display: "flex", alignItems: "center" }}>
-          <Link href="/" style={{ fontWeight: 600, textDecoration: "none" }}>
-            ← Gamedevs Connect
+        <header className="flex items-center gap-4 border-b border-border bg-surface px-4 py-3">
+          <Link
+            href="/"
+            className="font-display text-[10px] text-accent-bright transition-colors hover:text-accent sm:text-xs"
+          >
+            ⚔ GAMEDEVS CONNECT
           </Link>
-          <Link href="/discover" style={{ marginLeft: "1rem" }}>
+          <Link href="/discover" className="text-sm text-text-muted transition-colors hover:text-text">
             Discover
           </Link>
           <SearchBar />

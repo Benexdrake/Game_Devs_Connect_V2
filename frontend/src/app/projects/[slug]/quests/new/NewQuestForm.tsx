@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Skill } from "@/lib/types";
+import { Button, Input, PageContainer, Select, Textarea } from "@/components/ui";
 
 const CATEGORIES = ["Programming", "Art2D", "Art3D", "Animation", "Audio", "Design", "Writing", "Other"];
 const DIFFICULTIES = ["Easy", "Medium", "Hard"] as const;
@@ -60,90 +61,77 @@ export function NewQuestForm({ projectSlug, skills }: { projectSlug: string; ski
   }
 
   return (
-    <main style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1rem" }}>
-      <h1>Neue Quest</h1>
+    <PageContainer className="max-w-md">
+      <h1 className="mb-6 font-display text-sm text-accent-bright">NEUE QUEST</h1>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="title">Titel</label>
-        <input
-          id="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          style={{ display: "block", width: "100%", marginBottom: "1rem" }}
-        />
+        <label htmlFor="title" className="mb-1 block text-sm text-text-muted">Titel</label>
+        <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required className="mb-4" />
 
-        <label htmlFor="description">Beschreibung</label>
-        <textarea
+        <label htmlFor="description" className="mb-1 block text-sm text-text-muted">Beschreibung</label>
+        <Textarea
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={4}
-          style={{ display: "block", width: "100%", marginBottom: "1rem" }}
+          className="mb-4"
         />
 
-        <label htmlFor="category">Kategorie</label>
-        <select
-          id="category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          style={{ display: "block", width: "100%", marginBottom: "1rem" }}
-        >
+        <label htmlFor="category" className="mb-1 block text-sm text-text-muted">Kategorie</label>
+        <Select id="category" value={category} onChange={(e) => setCategory(e.target.value)} className="mb-4">
           {CATEGORIES.map((c) => (
             <option key={c} value={c}>{c}</option>
           ))}
-        </select>
+        </Select>
 
-        <label htmlFor="difficulty">Schwierigkeit</label>
-        <select
+        <label htmlFor="difficulty" className="mb-1 block text-sm text-text-muted">Schwierigkeit</label>
+        <Select
           id="difficulty"
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value as (typeof DIFFICULTIES)[number])}
-          style={{ display: "block", width: "100%", marginBottom: "1rem" }}
+          className="mb-4"
         >
           {DIFFICULTIES.map((d) => (
             <option key={d} value={d}>{d}</option>
           ))}
-        </select>
+        </Select>
 
-        <label htmlFor="xpReward">XP Reward (durch Schwierigkeit festgelegt)</label>
-        <input
-          id="xpReward"
-          type="number"
-          value={XP_BY_DIFFICULTY[difficulty]}
-          readOnly
-          disabled
-          style={{ display: "block", width: "100%", marginBottom: "1rem" }}
-        />
+        <label htmlFor="xpReward" className="mb-1 block text-sm text-text-muted">
+          XP Reward (durch Schwierigkeit festgelegt)
+        </label>
+        <Input id="xpReward" type="number" value={XP_BY_DIFFICULTY[difficulty]} readOnly disabled className="mb-4" />
 
-        <label htmlFor="maxContributors">Max. Contributors</label>
-        <input
+        <label htmlFor="maxContributors" className="mb-1 block text-sm text-text-muted">Max. Contributors</label>
+        <Input
           id="maxContributors"
           type="number"
           min={1}
           value={maxContributors}
           onChange={(e) => setMaxContributors(Number(e.target.value))}
-          style={{ display: "block", width: "100%", marginBottom: "1rem" }}
+          className="mb-4"
         />
 
-        <fieldset style={{ marginBottom: "1rem" }}>
-          <legend>Benötigte Skills</legend>
-          {skills.map((skill) => (
-            <label key={skill.id} style={{ display: "block" }}>
-              <input
-                type="checkbox"
-                checked={selectedSkillIds.includes(skill.id)}
-                onChange={() => toggleSkill(skill.id)}
-              />{" "}
-              {skill.name}
-            </label>
-          ))}
+        <fieldset className="mb-4 rounded-md border border-border p-3">
+          <legend className="px-1 text-sm text-text-muted">Benötigte Skills</legend>
+          <div className="grid grid-cols-2 gap-1">
+            {skills.map((skill) => (
+              <label key={skill.id} className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={selectedSkillIds.includes(skill.id)}
+                  onChange={() => toggleSkill(skill.id)}
+                  className="accent-accent"
+                />
+                {skill.name}
+              </label>
+            ))}
+          </div>
         </fieldset>
 
-        <button type="submit" disabled={saving}>
+        <Button type="submit" disabled={saving}>
           {saving ? "Speichere..." : "Quest erstellen"}
-        </button>
+        </Button>
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </main>
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
+    </PageContainer>
   );
 }

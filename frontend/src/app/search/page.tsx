@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { apiFetchJson } from "@/lib/api";
 import type { SearchResults } from "@/lib/types";
+import { PageContainer, Panel } from "@/components/ui";
 
 export default async function SearchPage({
   searchParams,
@@ -11,43 +12,47 @@ export default async function SearchPage({
   const results = q ? await apiFetchJson<SearchResults>(`/api/search?q=${encodeURIComponent(q)}`) : null;
 
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: "2rem 1rem" }}>
-      <h1>Suche{q ? `: "${q}"` : ""}</h1>
+    <PageContainer>
+      <h1 className="mb-6 font-display text-sm text-accent-bright">
+        SUCHE{q ? `: "${q}"` : ""}
+      </h1>
 
-      {!q && <p>Bitte einen Suchbegriff eingeben.</p>}
+      {!q && <p className="text-text-muted">Bitte einen Suchbegriff eingeben.</p>}
 
-      {q && !results && <p>Keine Ergebnisse.</p>}
+      {q && !results && <Panel className="text-text-muted">Keine Ergebnisse.</Panel>}
 
       {results && (
         <>
-          <section style={{ marginBottom: "1.5rem" }}>
-            <h2>Projects</h2>
+          <section className="mb-6">
+            <h2 className="mb-2 font-display text-xs text-accent-bright">PROJECTS</h2>
             {results.projects.length === 0 ? (
-              <p>Keine Projekte gefunden.</p>
+              <p className="text-text-muted">Keine Projekte gefunden.</p>
             ) : (
-              <ul style={{ listStyle: "none", padding: 0 }}>
+              <ul className="list-none space-y-1 p-0">
                 {results.projects.map((p) => (
-                  <li key={p.slug} style={{ marginBottom: "0.5rem" }}>
-                    <Link href={`/projects/${p.slug}`} style={{ fontWeight: 600 }}>{p.title}</Link>
-                    {" — "}
-                    {p.genre} · {p.engine}
+                  <li key={p.slug}>
+                    <Link href={`/projects/${p.slug}`} className="font-medium text-text hover:text-accent-bright">
+                      {p.title}
+                    </Link>
+                    <span className="text-text-muted"> — {p.genre} · {p.engine}</span>
                   </li>
                 ))}
               </ul>
             )}
           </section>
 
-          <section style={{ marginBottom: "1.5rem" }}>
-            <h2>Quests</h2>
+          <section className="mb-6">
+            <h2 className="mb-2 font-display text-xs text-accent-bright">QUESTS</h2>
             {results.quests.length === 0 ? (
-              <p>Keine Quests gefunden.</p>
+              <p className="text-text-muted">Keine Quests gefunden.</p>
             ) : (
-              <ul style={{ listStyle: "none", padding: 0 }}>
+              <ul className="list-none space-y-1 p-0">
                 {results.quests.map((quest) => (
-                  <li key={quest.id} style={{ marginBottom: "0.5rem" }}>
-                    <Link href={`/quests/${quest.id}`} style={{ fontWeight: 600 }}>{quest.title}</Link>
-                    {" — "}
-                    {quest.projectTitle} · {quest.difficulty} · {quest.xpReward} XP
+                  <li key={quest.id}>
+                    <Link href={`/quests/${quest.id}`} className="font-medium text-text hover:text-accent-bright">
+                      {quest.title}
+                    </Link>
+                    <span className="text-text-muted"> — {quest.projectTitle} · {quest.difficulty} · {quest.xpReward} XP</span>
                   </li>
                 ))}
               </ul>
@@ -55,14 +60,16 @@ export default async function SearchPage({
           </section>
 
           <section>
-            <h2>Users</h2>
+            <h2 className="mb-2 font-display text-xs text-accent-bright">USERS</h2>
             {results.users.length === 0 ? (
-              <p>Keine User gefunden.</p>
+              <p className="text-text-muted">Keine User gefunden.</p>
             ) : (
-              <ul style={{ listStyle: "none", padding: 0 }}>
+              <ul className="list-none space-y-1 p-0">
                 {results.users.map((user) => (
-                  <li key={user.username} style={{ marginBottom: "0.5rem" }}>
-                    <Link href={`/users/${user.username}`}>{user.username}</Link>
+                  <li key={user.username}>
+                    <Link href={`/users/${user.username}`} className="text-accent hover:text-accent-bright">
+                      {user.username}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -70,6 +77,6 @@ export default async function SearchPage({
           </section>
         </>
       )}
-    </main>
+    </PageContainer>
   );
 }

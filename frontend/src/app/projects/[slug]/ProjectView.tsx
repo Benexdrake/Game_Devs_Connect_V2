@@ -3,10 +3,20 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import clsx from "clsx";
 import type { ActivityEvent, CurrentUser, Post, Project, ProjectRole, Quest } from "@/lib/types";
 import { FollowButton } from "@/app/FollowButton";
+import { Badge, Button, Input, PageContainer, Panel, Select, Textarea } from "@/components/ui";
 
 type Tab = "overview" | "team" | "quests" | "posts" | "activity";
+
+const TABS: { id: Tab; label: string }[] = [
+  { id: "overview", label: "Overview" },
+  { id: "team", label: "Team" },
+  { id: "quests", label: "Quests" },
+  { id: "posts", label: "Updates" },
+  { id: "activity", label: "Activity" },
+];
 
 export function ProjectView({
   project,
@@ -173,65 +183,85 @@ export function ProjectView({
   }
 
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: "2rem 1rem" }}>
+    <PageContainer>
       {project.bannerUrl && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={project.bannerUrl} alt="" style={{ width: "100%", maxHeight: 200, objectFit: "cover" }} />
+        <img src={project.bannerUrl} alt="" className="mb-4 h-48 w-full rounded-lg object-cover" />
       )}
-      <h1>{project.title}</h1>
-      <p>
+      <h1 className="mb-1 font-display text-base text-accent-bright">{project.title}</h1>
+      <p className="mb-2 text-sm text-text-muted">
         {project.genre} · {project.engine} · {project.status} · {project.visibility}
       </p>
-      {canManage && <Link href={`/projects/${project.slug}/settings`}>Projekt-Einstellungen</Link>}
-      {me && !isMember && (
-        <span style={{ marginLeft: "0.5rem" }}>
-          <FollowButton
-            followUrl={`/api/projects/${project.slug}/follow`}
-            initialFollowing={project.isFollowedByMe}
-          />
-        </span>
-      )}
+      <div className="mb-4 flex items-center gap-3">
+        {canManage && (
+          <Link href={`/projects/${project.slug}/settings`} className="text-accent hover:text-accent-bright">
+            Projekt-Einstellungen
+          </Link>
+        )}
+        {me && !isMember && (
+          <FollowButton followUrl={`/api/projects/${project.slug}/follow`} initialFollowing={project.isFollowedByMe} />
+        )}
+      </div>
 
-      <nav style={{ display: "flex", gap: "1rem", margin: "1rem 0", borderBottom: "1px solid #ccc" }}>
-        <button type="button" onClick={() => setTab("overview")}>Overview</button>
-        <button type="button" onClick={() => setTab("team")}>Team</button>
-        <button type="button" onClick={() => setTab("quests")}>Quests</button>
-        <button type="button" onClick={() => setTab("posts")}>Updates</button>
-        <button type="button" onClick={() => setTab("activity")}>Activity</button>
+      <nav className="mb-4 flex gap-1 border-b border-border">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => setTab(t.id)}
+            className={clsx(
+              "border-b-2 px-3 py-2 text-sm transition-colors",
+              tab === t.id
+                ? "border-accent-bright text-accent-bright"
+                : "border-transparent text-text-muted hover:text-text",
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
       </nav>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="mb-3 text-sm text-danger">{error}</p>}
 
       {tab === "overview" && (
         <section>
           <p>{project.description}</p>
-          {project.tags.length > 0 && <p>Tags: {project.tags.join(", ")}</p>}
+          {project.tags.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {project.tags.map((t) => (
+                <Badge key={t}>{t}</Badge>
+              ))}
+            </div>
+          )}
         </section>
       )}
 
       {tab === "team" && (
         <section>
-          <ul>
+          <ul className="list-none space-y-2 p-0">
             {project.members.map((member) => (
-              <li key={member.userId} style={{ marginBottom: "0.5rem" }}>
-                <Link href={`/users/${member.username}`}>{member.username}</Link> — {member.role}
+              <li key={member.userId} className="flex items-center gap-2">
+                <Link href={`/users/${member.username}`} className="text-accent hover:text-accent-bright">
+                  {member.username}
+                </Link>
+                <Badge tone="accent">{member.role}</Badge>
                 {canManage && member.username !== me?.username && (
                   <>
                     {myRole === "Owner" && (
-                      <select
+                      <Select
                         value={member.role}
                         disabled={busy}
                         onChange={(e) => handleRoleChange(member.username, e.target.value as ProjectRole)}
-                        style={{ marginLeft: "0.5rem" }}
+                        className="w-auto py-1"
                       >
                         <option value="Owner">Owner</option>
                         <option value="Admin">Admin</option>
                         <option value="Contributor">Contributor</option>
-                      </select>
+                      </Select>
                     )}
-                    <button type="button" disabled={busy} onClick={() => handleRemove(member.username)} style={{ marginLeft: "0.5rem" }}>
+                    <Button type="button" variant="danger" disabled={busy} onClick={() => handleRemove(member.username)}>
                       Entfernen
-                    </button>
+                    </Button>
                   </>
                 )}
               </li>
@@ -239,18 +269,19 @@ export function ProjectView({
           </ul>
 
           {canManage && (
-            <form onSubmit={handleInvite} style={{ display: "flex", gap: "0.5rem", marginTop: "1rem" }}>
-              <input
+            <form onSubmit={handleInvite} className="mt-4 flex gap-2">
+              <Input
                 placeholder="Username"
                 value={inviteUsername}
                 onChange={(e) => setInviteUsername(e.target.value)}
                 required
+                className="w-auto flex-1"
               />
-              <select value={inviteRole} onChange={(e) => setInviteRole(e.target.value as ProjectRole)}>
+              <Select value={inviteRole} onChange={(e) => setInviteRole(e.target.value as ProjectRole)} className="w-auto">
                 <option value="Contributor">Contributor</option>
                 {myRole === "Owner" && <option value="Admin">Admin</option>}
-              </select>
-              <button type="submit" disabled={busy}>Einladen</button>
+              </Select>
+              <Button type="submit" disabled={busy}>Einladen</Button>
             </form>
           )}
         </section>
@@ -259,122 +290,145 @@ export function ProjectView({
       {tab === "quests" && (
         <section>
           {canManage && (
-            <p>
-              <Link href={`/projects/${project.slug}/quests/new`}>+ Neue Quest</Link>
+            <p className="mb-3">
+              <Link href={`/projects/${project.slug}/quests/new`} className="text-accent hover:text-accent-bright">
+                + Neue Quest
+              </Link>
             </p>
           )}
           {quests.length === 0 ? (
-            <p>Noch keine Quests.</p>
+            <Panel className="text-text-muted">Noch keine Quests.</Panel>
           ) : (
-            <ul style={{ listStyle: "none", padding: 0 }}>
+            <ul className="list-none space-y-2 p-0">
               {quests.map((quest) => (
-                <li key={quest.id} style={{ border: "1px solid #ccc", borderRadius: 8, padding: "0.75rem", marginBottom: "0.5rem" }}>
-                  <Link href={`/quests/${quest.id}`} style={{ fontWeight: 600 }}>{quest.title}</Link>
-                  {" — "}
-                  {quest.status} · {quest.difficulty} · {quest.xpReward} XP
-                  {quest.claimedByUsername && ` · claimed von ${quest.claimedByUsername}`}
-                  {canManage && (
-                    <>
-                      {quest.status === "Open" && (
-                        <Link href={`/quests/${quest.id}/edit`} style={{ marginLeft: "0.5rem" }}>
-                          Bearbeiten
-                        </Link>
-                      )}
-                      {quest.status !== "Cancelled" && (
-                        <button
-                          type="button"
-                          disabled={busy}
-                          onClick={() => handleCancelQuest(quest.id)}
-                          style={{ marginLeft: "0.5rem" }}
-                        >
-                          Abbrechen
-                        </button>
-                      )}
-                    </>
-                  )}
+                <li key={quest.id}>
+                  <Panel className="flex flex-wrap items-center gap-2">
+                    <Link href={`/quests/${quest.id}`} className="font-medium text-text hover:text-accent-bright">
+                      {quest.title}
+                    </Link>
+                    <Badge tone={quest.status === "Open" ? "success" : "neutral"}>{quest.status}</Badge>
+                    <Badge tone="accent">{quest.difficulty}</Badge>
+                    <span className="text-sm text-text-muted">{quest.xpReward} XP</span>
+                    {quest.claimedByUsername && (
+                      <span className="text-sm text-text-muted">claimed von {quest.claimedByUsername}</span>
+                    )}
+                    {canManage && (
+                      <span className="ml-auto flex gap-2">
+                        {quest.status === "Open" && (
+                          <Link href={`/quests/${quest.id}/edit`} className="text-accent hover:text-accent-bright">
+                            Bearbeiten
+                          </Link>
+                        )}
+                        {quest.status !== "Cancelled" && (
+                          <Button type="button" variant="danger" disabled={busy} onClick={() => handleCancelQuest(quest.id)}>
+                            Abbrechen
+                          </Button>
+                        )}
+                      </span>
+                    )}
+                  </Panel>
                 </li>
               ))}
             </ul>
           )}
         </section>
       )}
+
       {tab === "posts" && (
         <section>
           {isMember && (
-            <form onSubmit={handleCreatePost} style={{ marginBottom: "1.5rem" }}>
-              <textarea
+            <form onSubmit={handleCreatePost} className="mb-6">
+              <Textarea
                 placeholder="Was gibt's Neues im Projekt?"
                 value={postBody}
                 onChange={(e) => setPostBody(e.target.value)}
                 required
                 rows={3}
-                style={{ display: "block", width: "100%", marginBottom: "0.5rem" }}
+                className="mb-2"
               />
-              <input type="file" multiple onChange={(e) => setPostFiles(e.target.files)} style={{ marginBottom: "0.5rem" }} />
-              <button type="submit" disabled={busy}>Posten</button>
+              <input
+                type="file"
+                multiple
+                onChange={(e) => setPostFiles(e.target.files)}
+                className="mb-2 block w-full text-sm text-text-muted file:mr-3 file:rounded-md file:border file:border-border file:bg-canvas file:px-3 file:py-1.5 file:text-text"
+              />
+              <Button type="submit" disabled={busy}>Posten</Button>
             </form>
           )}
 
           {posts.length === 0 ? (
-            <p>Noch keine Updates.</p>
+            <Panel className="text-text-muted">Noch keine Updates.</Panel>
           ) : (
-            <ul style={{ listStyle: "none", padding: 0 }}>
+            <ul className="list-none space-y-4 p-0">
               {posts.map((post) => (
-                <li key={post.id} style={{ border: "1px solid #ccc", borderRadius: 8, padding: "1rem", marginBottom: "1rem" }}>
-                  <p style={{ margin: 0 }}>
-                    <Link href={`/users/${post.authorUsername}`}>{post.authorUsername}</Link>
-                    {" · "}
-                    <span style={{ color: "#888", fontSize: "0.85em" }}>{new Date(post.createdAt).toLocaleString()}</span>
-                  </p>
-                  <p>{post.body}</p>
+                <li key={post.id}>
+                  <Panel>
+                    <p className="m-0 text-sm">
+                      <Link href={`/users/${post.authorUsername}`} className="text-accent hover:text-accent-bright">
+                        {post.authorUsername}
+                      </Link>{" "}
+                      <span className="text-text-muted">{new Date(post.createdAt).toLocaleString()}</span>
+                    </p>
+                    <p>{post.body}</p>
 
-                  {post.attachments.length > 0 && (
-                    <ul>
-                      {post.attachments.map((a) => (
-                        <li key={a.id}>
-                          <a href={`/api/posts/${post.id}/attachments/${a.id}`} target="_blank" rel="noopener noreferrer">
-                            {a.fileName}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", margin: "0.5rem 0" }}>
-                    {me && (
-                      <button type="button" onClick={() => handleToggleLike(post)}>
-                        {post.likedByMe ? "♥" : "♡"} {post.likeCount}
-                      </button>
+                    {post.attachments.length > 0 && (
+                      <ul className="list-disc pl-5 text-sm">
+                        {post.attachments.map((a) => (
+                          <li key={a.id}>
+                            <a
+                              href={`/api/posts/${post.id}/attachments/${a.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-accent hover:text-accent-bright"
+                            >
+                              {a.fileName}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
                     )}
-                    {!me && <span>♥ {post.likeCount}</span>}
-                    {(post.authorId === me?.id || canManage) && (
-                      <button type="button" onClick={() => handleDeletePost(post.id)} style={{ color: "red" }}>
-                        Löschen
-                      </button>
-                    )}
-                  </div>
 
-                  {post.comments.length > 0 && (
-                    <ul style={{ listStyle: "none", padding: 0, marginLeft: "1rem" }}>
-                      {post.comments.map((c) => (
-                        <li key={c.id} style={{ marginBottom: "0.25rem" }}>
-                          <Link href={`/users/${c.authorUsername}`}>{c.authorUsername}</Link>: {c.body}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {isMember && (
-                    <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
-                      <input
-                        placeholder="Kommentar schreiben..."
-                        value={commentDrafts[post.id] ?? ""}
-                        onChange={(e) => setCommentDrafts((prev) => ({ ...prev, [post.id]: e.target.value }))}
-                        style={{ flex: 1 }}
-                      />
-                      <button type="button" onClick={() => handleComment(post.id)}>Senden</button>
+                    <div className="my-2 flex items-center gap-3">
+                      {me && (
+                        <Button type="button" variant="ghost" onClick={() => handleToggleLike(post)}>
+                          {post.likedByMe ? "♥" : "♡"} {post.likeCount}
+                        </Button>
+                      )}
+                      {!me && <span className="text-sm text-text-muted">♥ {post.likeCount}</span>}
+                      {(post.authorId === me?.id || canManage) && (
+                        <Button type="button" variant="danger" onClick={() => handleDeletePost(post.id)}>
+                          Löschen
+                        </Button>
+                      )}
                     </div>
-                  )}
+
+                    {post.comments.length > 0 && (
+                      <ul className="list-none space-y-1 border-t border-border p-0 pt-2">
+                        {post.comments.map((c) => (
+                          <li key={c.id} className="text-sm">
+                            <Link href={`/users/${c.authorUsername}`} className="text-accent hover:text-accent-bright">
+                              {c.authorUsername}
+                            </Link>
+                            : {c.body}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {isMember && (
+                      <div className="mt-2 flex gap-2">
+                        <Input
+                          placeholder="Kommentar schreiben..."
+                          value={commentDrafts[post.id] ?? ""}
+                          onChange={(e) => setCommentDrafts((prev) => ({ ...prev, [post.id]: e.target.value }))}
+                          className="flex-1"
+                        />
+                        <Button type="button" variant="secondary" onClick={() => handleComment(post.id)}>
+                          Senden
+                        </Button>
+                      </div>
+                    )}
+                  </Panel>
                 </li>
               ))}
             </ul>
@@ -385,25 +439,25 @@ export function ProjectView({
       {tab === "activity" && (
         <section>
           {activity.length === 0 ? (
-            <p>Noch keine Aktivität.</p>
+            <Panel className="text-text-muted">Noch keine Aktivität.</Panel>
           ) : (
-            <ul style={{ listStyle: "none", padding: 0 }}>
+            <ul className="list-none space-y-2 p-0">
               {activity.map((event) => (
-                <li key={event.id} style={{ borderBottom: "1px solid #eee", padding: "0.5rem 0" }}>
+                <li key={event.id} className="border-b border-border py-2">
                   {event.linkUrl ? (
-                    <Link href={event.linkUrl} style={{ margin: 0 }}>
+                    <Link href={event.linkUrl} className="text-text hover:text-accent-bright">
                       {event.summary}
                     </Link>
                   ) : (
-                    <p style={{ margin: 0 }}>{event.summary}</p>
+                    <p className="m-0">{event.summary}</p>
                   )}
-                  <p style={{ margin: 0, fontSize: "0.8em", color: "#888" }}>{new Date(event.createdAt).toLocaleString()}</p>
+                  <p className="m-0 text-xs text-text-muted">{new Date(event.createdAt).toLocaleString()}</p>
                 </li>
               ))}
             </ul>
           )}
         </section>
       )}
-    </main>
+    </PageContainer>
   );
 }

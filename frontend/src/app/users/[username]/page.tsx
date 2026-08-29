@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { apiFetchJson } from "@/lib/api";
 import type { CurrentUser, UserProfile, XpSummary } from "@/lib/types";
 import { FollowButton } from "@/app/FollowButton";
+import { Badge, PageContainer, Panel } from "@/components/ui";
 
 export default async function UserProfilePage({
   params,
@@ -26,8 +27,8 @@ export default async function UserProfilePage({
   const levelProgress = xp && levelSpan > 0 ? (xp.totalXp - xp.xpForCurrentLevel) / levelSpan : 0;
 
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: "2rem 1rem" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+    <PageContainer>
+      <div className="flex items-center gap-4">
         {profile.avatarUrl && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -35,52 +36,58 @@ export default async function UserProfilePage({
             alt={profile.username}
             width={80}
             height={80}
-            style={{ borderRadius: "50%" }}
+            className="rounded-full border-2 border-border-strong"
           />
         )}
         <div>
-          <h1 style={{ margin: 0 }}>{profile.username}</h1>
-          {isOwnProfile && <Link href="/settings/profile">Profil bearbeiten</Link>}
-          {!isOwnProfile && me && (
-            <FollowButton
-              followUrl={`/api/users/${encodeURIComponent(profile.username)}/follow`}
-              initialFollowing={profile.isFollowedByMe}
-            />
-          )}
+          <h1 className="m-0 font-display text-base text-accent-bright">{profile.username}</h1>
+          <div className="mt-1">
+            {isOwnProfile && (
+              <Link href="/settings/profile" className="text-accent hover:text-accent-bright">
+                Profil bearbeiten
+              </Link>
+            )}
+            {!isOwnProfile && me && (
+              <FollowButton
+                followUrl={`/api/users/${encodeURIComponent(profile.username)}/follow`}
+                initialFollowing={profile.isFollowedByMe}
+              />
+            )}
+          </div>
         </div>
       </div>
 
       {xp && (
-        <section style={{ margin: "1rem 0" }}>
-          <p style={{ margin: 0 }}>
-            <strong>Level {xp.level}</strong> · {xp.totalXp} XP ·{" "}
-            {xp.reputation === null ? "Reputation: noch keine Daten" : `Reputation: ${xp.reputation} / 5`}
+        <Panel className="my-4">
+          <p className="m-0">
+            <span className="font-display text-xs text-accent-bright">LVL {xp.level}</span>{" "}
+            <span className="text-text-muted">
+              · {xp.totalXp} XP ·{" "}
+              {xp.reputation === null ? "Reputation: noch keine Daten" : `Reputation: ${xp.reputation} / 5`}
+            </span>
           </p>
-          <div style={{ background: "#eee", borderRadius: 4, height: 8, marginTop: "0.25rem", overflow: "hidden" }}>
+          <div className="mt-2 h-3 overflow-hidden rounded-full border border-border bg-canvas">
             <div
-              style={{
-                background: "#4a90d9",
-                height: "100%",
-                width: `${Math.round(Math.min(1, Math.max(0, levelProgress)) * 100)}%`,
-              }}
+              className="h-full bg-gradient-to-r from-accent to-accent-bright"
+              style={{ width: `${Math.round(Math.min(1, Math.max(0, levelProgress)) * 100)}%` }}
             />
           </div>
-          <p style={{ margin: "0.25rem 0 0", color: "#666", fontSize: "0.9em" }}>
+          <p className="m-0 mt-1 text-xs text-text-muted">
             {xp.totalXp} / {xp.xpForNextLevel} XP bis Level {xp.level + 1} · {xp.completedQuests} Completed Quests ·{" "}
             {xp.acceptedContributions} Accepted Contributions
           </p>
-        </section>
+        </Panel>
       )}
 
       {profile.bio && <p>{profile.bio}</p>}
 
       {profile.links.length > 0 && (
-        <section>
-          <h2>Links</h2>
-          <ul>
+        <section className="mb-6">
+          <h2 className="mb-2 font-display text-xs text-accent-bright">LINKS</h2>
+          <ul className="list-none space-y-1 p-0">
             {profile.links.map((link) => (
               <li key={link.url}>
-                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-bright">
                   {link.label}
                 </a>
               </li>
@@ -89,30 +96,31 @@ export default async function UserProfilePage({
         </section>
       )}
 
-      <section>
-        <h2>Skills</h2>
+      <section className="mb-6">
+        <h2 className="mb-2 font-display text-xs text-accent-bright">SKILLS</h2>
         {profile.skills.length === 0 ? (
-          <p>Noch keine Skills angegeben.</p>
+          <p className="text-text-muted">Noch keine Skills angegeben.</p>
         ) : (
-          <ul style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", listStyle: "none", padding: 0 }}>
+          <div className="flex flex-wrap gap-2">
             {profile.skills.map((skill) => (
-              <li key={skill.id} style={{ border: "1px solid #ccc", borderRadius: 4, padding: "0.25rem 0.5rem" }}>
-                {skill.name}
-              </li>
+              <Badge key={skill.id}>{skill.name}</Badge>
             ))}
-          </ul>
+          </div>
         )}
       </section>
 
-      <section>
-        <h2>Projects</h2>
+      <section className="mb-6">
+        <h2 className="mb-2 font-display text-xs text-accent-bright">PROJECTS</h2>
         {profile.projects.length === 0 ? (
-          <p>Noch an keinem Projekt beteiligt.</p>
+          <p className="text-text-muted">Noch an keinem Projekt beteiligt.</p>
         ) : (
-          <ul>
+          <ul className="list-none space-y-1 p-0">
             {profile.projects.map((project) => (
               <li key={project.slug}>
-                <Link href={`/projects/${project.slug}`}>{project.title}</Link> ({project.status})
+                <Link href={`/projects/${project.slug}`} className="text-accent hover:text-accent-bright">
+                  {project.title}
+                </Link>{" "}
+                <span className="text-text-muted">({project.status})</span>
               </li>
             ))}
           </ul>
@@ -120,23 +128,26 @@ export default async function UserProfilePage({
       </section>
 
       <section>
-        <h2>Contributions</h2>
+        <h2 className="mb-2 font-display text-xs text-accent-bright">CONTRIBUTIONS</h2>
         {profile.contributions.length === 0 ? (
-          <p>Noch keine Contributions.</p>
+          <p className="text-text-muted">Noch keine Contributions.</p>
         ) : (
-          <ul>
+          <ul className="list-none space-y-1 p-0">
             {profile.contributions.map((c) => (
-              <li key={c.id}>
-                <Link href={`/quests/${c.questId}`}>{c.questTitle}</Link>
+              <li key={c.id} className="text-sm">
+                <Link href={`/quests/${c.questId}`} className="text-accent hover:text-accent-bright">
+                  {c.questTitle}
+                </Link>
                 {" — "}
-                <Link href={`/projects/${c.projectSlug}`}>{c.projectTitle}</Link>
-                {" · "}
-                {new Date(c.createdAt).toLocaleDateString()}
+                <Link href={`/projects/${c.projectSlug}`} className="text-accent hover:text-accent-bright">
+                  {c.projectTitle}
+                </Link>
+                <span className="text-text-muted"> · {new Date(c.createdAt).toLocaleDateString()}</span>
               </li>
             ))}
           </ul>
         )}
       </section>
-    </main>
+    </PageContainer>
   );
 }

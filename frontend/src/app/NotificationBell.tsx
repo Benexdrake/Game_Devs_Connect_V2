@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import clsx from "clsx";
 import type { CurrentUser, NotificationsResult } from "@/lib/types";
 
 const POLL_INTERVAL_MS = 30000;
@@ -67,61 +68,46 @@ export function NotificationBell() {
   }
 
   return (
-    <div style={{ position: "relative", marginLeft: "auto" }}>
-      <button type="button" onClick={() => setOpen((o) => !o)}>
+    <div className="relative ml-auto">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="rounded-md border border-border px-2 py-1 text-sm text-text transition-colors hover:border-accent hover:text-accent-bright"
+      >
         🔔{data && data.unreadCount > 0 ? ` (${data.unreadCount})` : ""}
       </button>
 
       {open && (
-        <div
-          style={{
-            position: "absolute",
-            right: 0,
-            top: "100%",
-            background: "white",
-            color: "#111",
-            border: "1px solid #ccc",
-            borderRadius: 8,
-            width: 320,
-            maxHeight: 400,
-            overflowY: "auto",
-            zIndex: 10,
-            padding: "0.5rem",
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-            <strong>Notifications</strong>
-            <button type="button" onClick={markAllRead}>
+        <div className="absolute right-0 top-full z-10 mt-1 max-h-96 w-80 overflow-y-auto rounded-lg border-2 border-border-strong bg-surface p-2 text-text shadow-xl">
+          <div className="mb-2 flex items-center justify-between">
+            <strong className="font-display text-[10px] text-accent-bright">NOTIFICATIONS</strong>
+            <button type="button" onClick={markAllRead} className="text-xs text-accent hover:text-accent-bright">
               Alle gelesen
             </button>
           </div>
 
           {!data || data.items.length === 0 ? (
-            <p>Keine Benachrichtigungen.</p>
+            <p className="text-sm text-text-muted">Keine Benachrichtigungen.</p>
           ) : (
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+            <ul className="list-none space-y-1 p-0">
               {data.items.map((n) => (
                 <li
                   key={n.id}
                   onClick={() => !n.isRead && markRead(n.id)}
-                  style={{
-                    padding: "0.5rem",
-                    borderBottom: "1px solid #eee",
-                    background: n.isRead ? "transparent" : "#f0f6ff",
-                    cursor: n.isRead ? "default" : "pointer",
-                  }}
+                  className={clsx(
+                    "rounded-md border border-transparent p-2",
+                    !n.isRead && "cursor-pointer border-accent/40 bg-accent/10",
+                  )}
                 >
-                  <p style={{ margin: 0, fontSize: "0.9em" }}>{n.message}</p>
-                  <p style={{ margin: 0, fontSize: "0.75em", color: "#888" }}>
-                    {new Date(n.createdAt).toLocaleString()}
-                  </p>
+                  <p className="m-0 text-sm">{n.message}</p>
+                  <p className="m-0 text-xs text-text-muted">{new Date(n.createdAt).toLocaleString()}</p>
                 </li>
               ))}
             </ul>
           )}
 
-          <p style={{ marginTop: "0.5rem", marginBottom: 0 }}>
-            <Link href="/notifications" onClick={() => setOpen(false)}>
+          <p className="mt-2 mb-0">
+            <Link href="/notifications" onClick={() => setOpen(false)} className="text-xs text-accent hover:text-accent-bright">
               Alle anzeigen
             </Link>
           </p>

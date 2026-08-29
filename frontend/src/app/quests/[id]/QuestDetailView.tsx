@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { CurrentUser, ProjectRole, Quest, Submission, SubmissionDecision } from "@/lib/types";
+import { Badge, Button, Input, PageContainer, Panel, Textarea } from "@/components/ui";
 
 type LinkInput = { url: string; label: string };
 
@@ -153,188 +154,217 @@ export function QuestDetailView({
   }
 
   return (
-    <main style={{ maxWidth: 640, margin: "0 auto", padding: "2rem 1rem" }}>
-      <p>
-        <Link href={`/projects/${quest.projectSlug}`}>← {quest.projectTitle}</Link>
+    <PageContainer className="max-w-xl">
+      <p className="mb-2">
+        <Link href={`/projects/${quest.projectSlug}`} className="text-accent hover:text-accent-bright">
+          ← {quest.projectTitle}
+        </Link>
       </p>
-      <h1>{quest.title}</h1>
-      <p>
-        {quest.category} · {quest.difficulty} · {quest.xpReward} XP · {quest.status}
-      </p>
-      {quest.deadline && <p>Deadline: {new Date(quest.deadline).toLocaleDateString()}</p>}
+      <h1 className="mb-3 font-display text-base text-accent-bright">{quest.title}</h1>
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <Badge>{quest.category}</Badge>
+        <Badge tone="accent">{quest.difficulty}</Badge>
+        <Badge tone="warning">{quest.xpReward} XP</Badge>
+        <Badge tone={quest.status === "Open" ? "success" : "neutral"}>{quest.status}</Badge>
+      </div>
+      {quest.deadline && <p className="text-sm text-text-muted">Deadline: {new Date(quest.deadline).toLocaleDateString()}</p>}
       {quest.requiredSkills.length > 0 && (
-        <p>Benötigte Skills: {quest.requiredSkills.map((s) => s.name).join(", ")}</p>
+        <p className="text-sm text-text-muted">Benötigte Skills: {quest.requiredSkills.map((s) => s.name).join(", ")}</p>
       )}
       <p>{quest.description}</p>
-      <p>
-        Erstellt von <Link href={`/users/${quest.creatorUsername}`}>{quest.creatorUsername}</Link>
+      <p className="text-sm text-text-muted">
+        Erstellt von{" "}
+        <Link href={`/users/${quest.creatorUsername}`} className="text-accent hover:text-accent-bright">
+          {quest.creatorUsername}
+        </Link>
       </p>
       {quest.claimedByUsername && !isActiveClaimer && (
-        <p>
+        <p className="text-sm text-text-muted">
           Wird aktuell bearbeitet von{" "}
-          <Link href={`/users/${quest.claimedByUsername}`}>{quest.claimedByUsername}</Link>
+          <Link href={`/users/${quest.claimedByUsername}`} className="text-accent hover:text-accent-bright">
+            {quest.claimedByUsername}
+          </Link>
         </p>
       )}
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="mt-2 text-sm text-danger">{error}</p>}
 
-      {canClaim && (
-        <button type="button" disabled={busy} onClick={handleClaim}>
-          Quest claimen
-        </button>
-      )}
-      {isCreator && quest.status === "Open" && (
-        <Link href={`/quests/${quest.id}/edit`} style={{ marginLeft: "0.5rem" }}>
-          Bearbeiten
-        </Link>
-      )}
+      <div className="mt-4 flex items-center gap-3">
+        {canClaim && (
+          <Button type="button" disabled={busy} onClick={handleClaim}>
+            Quest claimen
+          </Button>
+        )}
+        {isCreator && quest.status === "Open" && (
+          <Link href={`/quests/${quest.id}/edit`} className="text-accent hover:text-accent-bright">
+            Bearbeiten
+          </Link>
+        )}
+      </div>
 
       {canSubmit && (
-        <section style={{ marginTop: "2rem", borderTop: "1px solid #ccc", paddingTop: "1rem" }}>
-          <p style={{ background: "#f0f6ff", color: "#111", padding: "0.5rem 0.75rem", borderRadius: 6 }}>
+        <section className="mt-8 border-t border-border pt-4">
+          <Panel className="border-accent bg-accent/10 text-text">
             ✓ Du hast diese Quest geclaimt. Reiche unten deine Submission ein, sobald du fertig bist.
-          </p>
-          <h2>Submission einreichen</h2>
+          </Panel>
+          <h2 className="my-3 font-display text-xs text-accent-bright">SUBMISSION EINREICHEN</h2>
           <form onSubmit={handleSubmitSubmission}>
-            <label htmlFor="submission-description">Beschreibung</label>
-            <textarea
+            <label htmlFor="submission-description" className="mb-1 block text-sm text-text-muted">
+              Beschreibung
+            </label>
+            <Textarea
               id="submission-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
               rows={4}
-              style={{ display: "block", width: "100%", marginBottom: "1rem" }}
+              className="mb-4"
             />
 
-            <fieldset style={{ marginBottom: "1rem" }}>
-              <legend>Links</legend>
+            <fieldset className="mb-4 rounded-md border border-border p-3">
+              <legend className="px-1 text-sm text-text-muted">Links</legend>
               {links.map((link, i) => (
-                <div key={i} style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                  <input
+                <div key={i} className="mb-2 flex gap-2">
+                  <Input
                     placeholder="https://..."
                     value={link.url}
                     onChange={(e) => updateLink(i, "url", e.target.value)}
-                    style={{ flex: 2 }}
+                    className="flex-[2]"
                   />
-                  <input
+                  <Input
                     placeholder="Label (optional)"
                     value={link.label}
                     onChange={(e) => updateLink(i, "label", e.target.value)}
-                    style={{ flex: 1 }}
+                    className="flex-1"
                   />
-                  <button type="button" onClick={() => removeLinkRow(i)}>
+                  <Button type="button" variant="ghost" onClick={() => removeLinkRow(i)}>
                     ×
-                  </button>
+                  </Button>
                 </div>
               ))}
-              <button type="button" onClick={addLinkRow}>
+              <Button type="button" variant="secondary" onClick={addLinkRow}>
                 + Link hinzufügen
-              </button>
+              </Button>
             </fieldset>
 
-            <label htmlFor="submission-files">Dateien</label>
+            <label htmlFor="submission-files" className="mb-1 block text-sm text-text-muted">
+              Dateien
+            </label>
             <input
               id="submission-files"
               type="file"
               multiple
               onChange={(e) => setFiles(e.target.files)}
-              style={{ display: "block", width: "100%", marginBottom: "1rem" }}
+              className="mb-4 block w-full text-sm text-text-muted file:mr-3 file:rounded-md file:border file:border-border file:bg-canvas file:px-3 file:py-1.5 file:text-text"
             />
 
-            <button type="submit" disabled={busy}>
+            <Button type="submit" disabled={busy}>
               {busy ? "Sende..." : "Einreichen"}
-            </button>
+            </Button>
           </form>
 
           {canRelease && (
-            <p style={{ marginTop: "1rem" }}>
-              <button type="button" disabled={busy} onClick={handleRelease} style={{ color: "#888" }}>
+            <p className="mt-4">
+              <Button type="button" variant="ghost" disabled={busy} onClick={handleRelease}>
                 Claim aufgeben
-              </button>
+              </Button>
             </p>
           )}
         </section>
       )}
 
       {(canManage || isActiveClaimer || submissions.length > 0) && (
-        <section style={{ marginTop: "2rem", borderTop: "1px solid #ccc", paddingTop: "1rem" }}>
-          <h2>Submissions</h2>
-          {submissions.length === 0 && <p>Noch keine Submission eingereicht.</p>}
-          <ul style={{ listStyle: "none", padding: 0 }}>
+        <section className="mt-8 border-t border-border pt-4">
+          <h2 className="mb-3 font-display text-xs text-accent-bright">SUBMISSIONS</h2>
+          {submissions.length === 0 && <p className="text-text-muted">Noch keine Submission eingereicht.</p>}
+          <ul className="list-none space-y-3 p-0">
             {submissions.map((submission) => (
-              <li
-                key={submission.id}
-                style={{ border: "1px solid #ccc", borderRadius: 8, padding: "0.75rem", marginBottom: "0.75rem" }}
-              >
-                <p style={{ margin: 0 }}>
-                  <strong>{submission.username}</strong> · {submission.status} ·{" "}
-                  {new Date(submission.submittedAt).toLocaleString()}
-                </p>
-                <p>{submission.description}</p>
+              <li key={submission.id}>
+                <Panel>
+                  <p className="m-0 text-sm">
+                    <strong className="text-text">{submission.username}</strong>{" "}
+                    <span className="text-text-muted">
+                      · {submission.status} · {new Date(submission.submittedAt).toLocaleString()}
+                    </span>
+                  </p>
+                  <p>{submission.description}</p>
 
-                {submission.links.length > 0 && (
-                  <ul>
-                    {submission.links.map((link) => (
-                      <li key={link.id}>
-                        <a href={link.url} target="_blank" rel="noopener noreferrer">
-                          {link.label || link.url}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                  {submission.links.length > 0 && (
+                    <ul className="list-disc pl-5 text-sm">
+                      {submission.links.map((link) => (
+                        <li key={link.id}>
+                          <a
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent hover:text-accent-bright"
+                          >
+                            {link.label || link.url}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
 
-                {submission.files.length > 0 && (
-                  <ul>
-                    {submission.files.map((file) => (
-                      <li key={file.id}>
-                        <a href={`/api/submissions/${submission.id}/files/${file.id}`} target="_blank" rel="noopener noreferrer">
-                          {file.fileName}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                  {submission.files.length > 0 && (
+                    <ul className="list-disc pl-5 text-sm">
+                      {submission.files.map((file) => (
+                        <li key={file.id}>
+                          <a
+                            href={`/api/submissions/${submission.id}/files/${file.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent hover:text-accent-bright"
+                          >
+                            {file.fileName}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
 
-                {submission.reviewComment && (
-                  <p style={{ color: "#666" }}>Review-Kommentar: {submission.reviewComment}</p>
-                )}
+                  {submission.reviewComment && (
+                    <p className="text-sm text-text-muted">Review-Kommentar: {submission.reviewComment}</p>
+                  )}
 
-                {canManage && pendingSubmission?.id === submission.id && (
-                  <div style={{ marginTop: "0.5rem" }}>
-                    <textarea
-                      placeholder="Kommentar (optional)"
-                      value={reviewComment}
-                      onChange={(e) => setReviewComment(e.target.value)}
-                      rows={2}
-                      style={{ display: "block", width: "100%", marginBottom: "0.5rem" }}
-                    />
-                    <button type="button" disabled={busy} onClick={() => handleReview(submission.id, "Accept")}>
-                      Accept
-                    </button>
-                    <button
-                      type="button"
-                      disabled={busy}
-                      onClick={() => handleReview(submission.id, "RequestChanges")}
-                      style={{ marginLeft: "0.5rem" }}
-                    >
-                      Request Changes
-                    </button>
-                    <button
-                      type="button"
-                      disabled={busy}
-                      onClick={() => handleReview(submission.id, "Reject")}
-                      style={{ marginLeft: "0.5rem", color: "red" }}
-                    >
-                      Reject
-                    </button>
-                  </div>
-                )}
+                  {canManage && pendingSubmission?.id === submission.id && (
+                    <div className="mt-2">
+                      <Textarea
+                        placeholder="Kommentar (optional)"
+                        value={reviewComment}
+                        onChange={(e) => setReviewComment(e.target.value)}
+                        rows={2}
+                        className="mb-2"
+                      />
+                      <div className="flex gap-2">
+                        <Button type="button" disabled={busy} onClick={() => handleReview(submission.id, "Accept")}>
+                          Accept
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          disabled={busy}
+                          onClick={() => handleReview(submission.id, "RequestChanges")}
+                        >
+                          Request Changes
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="danger"
+                          disabled={busy}
+                          onClick={() => handleReview(submission.id, "Reject")}
+                        >
+                          Reject
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </Panel>
               </li>
             ))}
           </ul>
         </section>
       )}
-    </main>
+    </PageContainer>
   );
 }

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Project, ProjectVisibility } from "@/lib/types";
+import { Button, Input, PageContainer, Select, Textarea } from "@/components/ui";
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -43,37 +44,37 @@ export default function NewProjectPage() {
   }
 
   return (
-    <main style={{ maxWidth: 480, margin: "0 auto", padding: "2rem 1rem" }}>
-      <h1>Neues Projekt</h1>
+    <PageContainer className="max-w-md">
+      <h1 className="mb-6 font-display text-sm text-accent-bright">NEUES PROJEKT</h1>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="title">Titel</label>
-        <input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required style={{ display: "block", width: "100%", marginBottom: "1rem" }} />
+        <label htmlFor="title" className="mb-1 block text-sm text-text-muted">Titel</label>
+        <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required className="mb-4" />
 
-        <label htmlFor="description">Beschreibung</label>
-        <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={4} style={{ display: "block", width: "100%", marginBottom: "1rem" }} />
+        <label htmlFor="description" className="mb-1 block text-sm text-text-muted">Beschreibung</label>
+        <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className="mb-4" />
 
-        <label htmlFor="engine">Engine</label>
-        <input id="engine" value={engine} onChange={(e) => setEngine(e.target.value)} style={{ display: "block", width: "100%", marginBottom: "1rem" }} />
+        <label htmlFor="engine" className="mb-1 block text-sm text-text-muted">Engine</label>
+        <Input id="engine" value={engine} onChange={(e) => setEngine(e.target.value)} className="mb-4" />
 
-        <label htmlFor="genre">Genre</label>
-        <input id="genre" value={genre} onChange={(e) => setGenre(e.target.value)} style={{ display: "block", width: "100%", marginBottom: "1rem" }} />
+        <label htmlFor="genre" className="mb-1 block text-sm text-text-muted">Genre</label>
+        <Input id="genre" value={genre} onChange={(e) => setGenre(e.target.value)} className="mb-4" />
 
-        <label htmlFor="visibility">Sichtbarkeit</label>
-        <select
+        <label htmlFor="visibility" className="mb-1 block text-sm text-text-muted">Sichtbarkeit</label>
+        <Select
           id="visibility"
           value={visibility}
           onChange={(e) => setVisibility(e.target.value as ProjectVisibility)}
-          style={{ display: "block", width: "100%", marginBottom: "1rem" }}
+          className="mb-4"
         >
           <option value="Public">Public</option>
           <option value="Private">Private</option>
-        </select>
+        </Select>
 
-        <button type="submit" disabled={submitting}>
+        <Button type="submit" disabled={submitting}>
           {submitting ? "Erstelle..." : "Projekt erstellen"}
-        </button>
-        {error && <p>{error}</p>}
+        </Button>
+        {error && <p className="mt-3 text-sm text-danger">{error}</p>}
       </form>
-    </main>
+    </PageContainer>
   );
 }

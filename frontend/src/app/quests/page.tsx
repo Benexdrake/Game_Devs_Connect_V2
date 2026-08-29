@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { apiFetchJson } from "@/lib/api";
 import type { Quest, Skill } from "@/lib/types";
+import { Badge, Button, Input, PageContainer, Panel, Select } from "@/components/ui";
 
 type SearchParams = {
   search?: string;
@@ -32,54 +33,61 @@ export default async function QuestsPage({
   ]);
 
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: "2rem 1rem" }}>
-      <h1>Quests entdecken</h1>
+    <PageContainer>
+      <h1 className="mb-6 font-display text-sm text-accent-bright">QUESTS ENTDECKEN</h1>
 
-      <form method="get" style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1.5rem" }}>
-        <input name="search" placeholder="Suche..." defaultValue={params.search ?? ""} />
-        <select name="category" defaultValue={params.category ?? ""}>
+      <form method="get" className="mb-6 flex flex-wrap gap-2">
+        <Input name="search" placeholder="Suche..." defaultValue={params.search ?? ""} className="w-40" />
+        <Select name="category" defaultValue={params.category ?? ""} className="w-auto">
           <option value="">Alle Kategorien</option>
           {CATEGORIES.map((c) => (
             <option key={c} value={c}>{c}</option>
           ))}
-        </select>
-        <select name="skillId" defaultValue={params.skillId ?? ""}>
+        </Select>
+        <Select name="skillId" defaultValue={params.skillId ?? ""} className="w-auto">
           <option value="">Alle Skills</option>
           {(skills ?? []).map((s) => (
             <option key={s.id} value={s.id}>{s.name}</option>
           ))}
-        </select>
-        <select name="difficulty" defaultValue={params.difficulty ?? ""}>
+        </Select>
+        <Select name="difficulty" defaultValue={params.difficulty ?? ""} className="w-auto">
           <option value="">Alle Schwierigkeiten</option>
           {DIFFICULTIES.map((d) => (
             <option key={d} value={d}>{d}</option>
           ))}
-        </select>
-        <input name="projectSlug" placeholder="Projekt-Slug" defaultValue={params.projectSlug ?? ""} />
-        <input name="engine" placeholder="Engine" defaultValue={params.engine ?? ""} />
-        <input name="minXp" type="number" placeholder="Min. XP" defaultValue={params.minXp ?? ""} />
-        <button type="submit">Filtern</button>
+        </Select>
+        <Input name="projectSlug" placeholder="Projekt-Slug" defaultValue={params.projectSlug ?? ""} className="w-32" />
+        <Input name="engine" placeholder="Engine" defaultValue={params.engine ?? ""} className="w-28" />
+        <Input name="minXp" type="number" placeholder="Min. XP" defaultValue={params.minXp ?? ""} className="w-24" />
+        <Button type="submit">Filtern</Button>
       </form>
 
       {!quests || quests.length === 0 ? (
-        <p>Keine offenen Quests gefunden.</p>
+        <Panel className="text-text-muted">Keine offenen Quests gefunden.</Panel>
       ) : (
-        <ul style={{ listStyle: "none", padding: 0 }}>
+        <ul className="list-none space-y-3 p-0">
           {quests.map((quest) => (
-            <li key={quest.id} style={{ border: "1px solid #ccc", borderRadius: 8, padding: "1rem", marginBottom: "0.75rem" }}>
-              <Link href={`/quests/${quest.id}`} style={{ fontWeight: 600 }}>{quest.title}</Link>
-              <p style={{ margin: "0.25rem 0" }}>
-                {quest.projectTitle} · {quest.category} · {quest.difficulty} · {quest.xpReward} XP
-              </p>
-              {quest.requiredSkills.length > 0 && (
-                <p style={{ margin: 0, color: "#666" }}>
-                  Skills: {quest.requiredSkills.map((s) => s.name).join(", ")}
-                </p>
-              )}
+            <li key={quest.id}>
+              <Panel>
+                <Link href={`/quests/${quest.id}`} className="font-medium text-text hover:text-accent-bright">
+                  {quest.title}
+                </Link>
+                <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-text-muted">
+                  <span>{quest.projectTitle}</span>
+                  <Badge>{quest.category}</Badge>
+                  <Badge tone="accent">{quest.difficulty}</Badge>
+                  <Badge tone="warning">{quest.xpReward} XP</Badge>
+                </div>
+                {quest.requiredSkills.length > 0 && (
+                  <p className="m-0 mt-2 text-sm text-text-muted">
+                    Skills: {quest.requiredSkills.map((s) => s.name).join(", ")}
+                  </p>
+                )}
+              </Panel>
             </li>
           ))}
         </ul>
       )}
-    </main>
+    </PageContainer>
   );
 }

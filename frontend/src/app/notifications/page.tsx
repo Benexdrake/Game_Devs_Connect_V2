@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import clsx from "clsx";
 import type { NotificationsResult } from "@/lib/types";
+import { Button, PageContainer } from "@/components/ui";
 
 export default function NotificationsPage() {
   const [data, setData] = useState<NotificationsResult | null>(null);
@@ -33,38 +35,35 @@ export default function NotificationsPage() {
   }
 
   return (
-    <main style={{ maxWidth: 640, margin: "0 auto", padding: "2rem 1rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1>Notifications</h1>
-        <button type="button" onClick={markAllRead}>
+    <PageContainer>
+      <div className="flex items-center justify-between">
+        <h1 className="font-display text-sm text-accent-bright">NOTIFICATIONS</h1>
+        <Button type="button" variant="secondary" onClick={markAllRead}>
           Alle gelesen
-        </button>
+        </Button>
       </div>
 
       {loading ? (
-        <p>Lade...</p>
+        <p className="mt-4 text-text-muted">Lade...</p>
       ) : !data || data.items.length === 0 ? (
-        <p>Keine Benachrichtigungen.</p>
+        <p className="mt-4 text-text-muted">Keine Benachrichtigungen.</p>
       ) : (
-        <ul style={{ listStyle: "none", padding: 0 }}>
+        <ul className="mt-4 list-none space-y-1 p-0">
           {data.items.map((n) => (
             <li
               key={n.id}
               onClick={() => !n.isRead && markRead(n.id)}
-              style={{
-                padding: "0.75rem",
-                borderBottom: "1px solid #eee",
-                background: n.isRead ? "transparent" : "#f0f6ff",
-                color: n.isRead ? "inherit" : "#111",
-                cursor: n.isRead ? "default" : "pointer",
-              }}
+              className={clsx(
+                "rounded-md border border-transparent p-3",
+                !n.isRead && "cursor-pointer border-accent/40 bg-accent/10",
+              )}
             >
-              <p style={{ margin: 0 }}>{n.message}</p>
-              <p style={{ margin: 0, fontSize: "0.8em", color: "#888" }}>{new Date(n.createdAt).toLocaleString()}</p>
+              <p className="m-0">{n.message}</p>
+              <p className="m-0 text-xs text-text-muted">{new Date(n.createdAt).toLocaleString()}</p>
             </li>
           ))}
         </ul>
       )}
-    </main>
+    </PageContainer>
   );
 }

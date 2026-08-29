@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/ui";
 
 export function FollowButton({
   followUrl,
@@ -31,8 +32,8 @@ export function FollowButton({
   }
 
   return (
-    <button type="button" onClick={toggle} disabled={busy}>
+    <Button type="button" variant={following ? "secondary" : "primary"} onClick={toggle} disabled={busy}>
       {following ? "Entfolgen" : "Folgen"}
-    </button>
+    </Button>
   );
 }
