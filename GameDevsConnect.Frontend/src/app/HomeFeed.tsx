@@ -16,7 +16,7 @@ export function HomeFeed({ me, feed }: { me: CurrentUser; feed: ActivityEvent[] 
 
   return (
     <PageContainer>
-      <div className="mb-4 flex items-center gap-3">
+      <div className="mb-6 flex items-center gap-3">
         {me.avatarUrl && (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={me.avatarUrl} alt={me.username} width={40} height={40} className="rounded-full" />
@@ -24,25 +24,10 @@ export function HomeFeed({ me, feed }: { me: CurrentUser; feed: ActivityEvent[] 
         <p className="m-0">
           Angemeldet als <span className="font-medium text-accent-bright">{me.username}</span>
         </p>
-      </div>
-
-      <nav className="mb-6 flex flex-wrap items-center gap-4 text-sm">
-        <Link href={`/users/${me.username}`} className="text-accent hover:text-accent-bright">
-          Mein Profil
-        </Link>
-        <Link href="/settings/profile" className="text-accent hover:text-accent-bright">
-          Profil bearbeiten
-        </Link>
-        <Link href="/projects/new" className="text-accent hover:text-accent-bright">
-          Neues Projekt
-        </Link>
-        <Link href="/quests" className="text-accent hover:text-accent-bright">
-          Quests entdecken
-        </Link>
-        <Button type="button" variant="ghost" onClick={handleLogout}>
+        <Button type="button" variant="ghost" onClick={handleLogout} className="ml-auto">
           Logout
         </Button>
-      </nav>
+      </div>
 
       <h2 className="mb-3 font-display text-xs text-accent-bright">DEIN FEED</h2>
       {feed.length === 0 ? (

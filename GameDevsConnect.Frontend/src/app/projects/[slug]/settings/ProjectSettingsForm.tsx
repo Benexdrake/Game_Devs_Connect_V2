@@ -41,7 +41,7 @@ export function ProjectSettingsForm({ project, isOwner }: { project: Project; is
   }
 
   return (
-    <PageContainer className="max-w-md">
+    <PageContainer width="md">
       <h1 className="mb-6 font-display text-sm text-accent-bright">PROJEKT-EINSTELLUNGEN</h1>
       <form onSubmit={handleSave}>
         <label htmlFor="title" className="mb-1 block text-sm text-text-muted">Titel</label>

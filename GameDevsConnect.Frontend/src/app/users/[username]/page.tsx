@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { apiFetchJson } from "@/lib/api";
 import type { CurrentUser, UserProfile, XpSummary } from "@/lib/types";
 import { FollowButton } from "@/app/FollowButton";
-import { Badge, PageContainer, Panel } from "@/components/ui";
+import { Badge, Button, PageContainer, Panel } from "@/components/ui";
 
 export default async function UserProfilePage({
   params,
@@ -28,32 +28,39 @@ export default async function UserProfilePage({
 
   return (
     <PageContainer>
-      <div className="flex items-center gap-4">
-        {profile.avatarUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={profile.avatarUrl}
-            alt={profile.username}
-            width={80}
-            height={80}
-            className="rounded-full border-2 border-border-strong"
-          />
-        )}
-        <div>
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-4">
+          {profile.avatarUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={profile.avatarUrl}
+              alt={profile.username}
+              width={80}
+              height={80}
+              className="rounded-full border-2 border-border-strong"
+            />
+          )}
           <h1 className="m-0 font-display text-base text-accent-bright">{profile.username}</h1>
-          <div className="mt-1">
-            {isOwnProfile && (
-              <Link href="/settings/profile" className="text-accent hover:text-accent-bright">
-                Profil bearbeiten
+        </div>
+        <div className="flex shrink-0 gap-2">
+          {isOwnProfile && (
+            <>
+              <Link href="/settings/profile">
+                <Button type="button" variant="secondary">
+                  Profil bearbeiten
+                </Button>
               </Link>
-            )}
-            {!isOwnProfile && me && (
-              <FollowButton
-                followUrl={`/api/users/${encodeURIComponent(profile.username)}/follow`}
-                initialFollowing={profile.isFollowedByMe}
-              />
-            )}
-          </div>
+              <Link href="/projects/new">
+                <Button type="button">+ Neues Projekt</Button>
+              </Link>
+            </>
+          )}
+          {!isOwnProfile && me && (
+            <FollowButton
+              followUrl={`/api/users/${encodeURIComponent(profile.username)}/follow`}
+              initialFollowing={profile.isFollowedByMe}
+            />
+          )}
         </div>
       </div>
 

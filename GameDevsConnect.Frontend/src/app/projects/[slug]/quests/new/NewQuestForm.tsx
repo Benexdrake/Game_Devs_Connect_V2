@@ -61,7 +61,7 @@ export function NewQuestForm({ projectSlug, skills }: { projectSlug: string; ski
   }
 
   return (
-    <PageContainer className="max-w-md">
+    <PageContainer width="md">
       <h1 className="mb-6 font-display text-sm text-accent-bright">NEUE QUEST</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="title" className="mb-1 block text-sm text-text-muted">Titel</label>

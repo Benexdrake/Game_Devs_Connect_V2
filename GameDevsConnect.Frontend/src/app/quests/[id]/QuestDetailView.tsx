@@ -154,7 +154,7 @@ export function QuestDetailView({
   }
 
   return (
-    <PageContainer className="max-w-xl">
+    <PageContainer width="xl">
       <p className="mb-2">
         <Link href={`/projects/${quest.projectSlug}`} className="text-accent hover:text-accent-bright">
           ← {quest.projectTitle}
