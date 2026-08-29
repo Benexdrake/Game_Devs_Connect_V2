@@ -11,7 +11,7 @@ public class UserLinkConfiguration : IEntityTypeConfiguration<UserLink>
         builder.ToTable("user_links");
 
         builder.HasKey(l => l.Id);
-        builder.Property(l => l.Label).IsRequired();
+        builder.Property(l => l.Platform).HasConversion<string>().IsRequired();
         builder.Property(l => l.Url).IsRequired();
 
         builder.HasOne<User>().WithMany().HasForeignKey(l => l.UserId).OnDelete(DeleteBehavior.Cascade);

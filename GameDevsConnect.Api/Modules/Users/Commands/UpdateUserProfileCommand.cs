@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameDevsConnect.Api.Modules.Users.Commands;
 
-public record UserLinkInput(string Label, string Url);
+public record UserLinkInput(LinkPlatform Platform, string? Label, string Url);
 
 public record UpdateUserProfileCommand(
     Guid UserId,
@@ -37,7 +37,14 @@ public class UpdateUserProfileCommandHandler(AppDbContext db, IMediator mediator
 
             foreach (var link in request.Links)
             {
-                db.UserLinks.Add(new UserLink { Id = Guid.NewGuid(), UserId = user.Id, Label = link.Label, Url = link.Url });
+                db.UserLinks.Add(new UserLink
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = user.Id,
+                    Platform = link.Platform,
+                    Label = link.Platform == LinkPlatform.Other ? link.Label : null,
+                    Url = link.Url,
+                });
             }
         }
 

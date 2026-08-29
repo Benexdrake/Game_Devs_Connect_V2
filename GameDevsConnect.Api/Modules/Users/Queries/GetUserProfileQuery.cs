@@ -2,13 +2,14 @@ using GameDevsConnect.Api.Infrastructure.Persistence;
 using GameDevsConnect.Api.Modules.Projects.Domain;
 using GameDevsConnect.Api.Modules.Skills.Domain;
 using GameDevsConnect.Api.Modules.Social.Domain;
+using GameDevsConnect.Api.Modules.Users.Domain;
 using GameDevsConnect.Api.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameDevsConnect.Api.Modules.Users.Queries;
 
-public record UserLinkDto(string Label, string Url);
+public record UserLinkDto(LinkPlatform Platform, string? Label, string Url);
 
 public record UserSkillDto(Guid Id, string Name, SkillCategory Category);
 
@@ -48,7 +49,7 @@ public class GetUserProfileQueryHandler(AppDbContext db)
 
         var links = await db.UserLinks
             .Where(l => l.UserId == user.Id)
-            .Select(l => new UserLinkDto(l.Label, l.Url))
+            .Select(l => new UserLinkDto(l.Platform, l.Label, l.Url))
             .ToListAsync(cancellationToken);
 
         var skills = await db.UserSkills

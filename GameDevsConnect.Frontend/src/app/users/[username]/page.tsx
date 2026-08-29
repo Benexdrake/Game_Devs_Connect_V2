@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { apiFetchJson } from "@/lib/api";
 import type { CurrentUser, UserProfile, XpSummary } from "@/lib/types";
 import { FollowButton } from "@/app/FollowButton";
-import { Badge, Button, PageContainer, Panel } from "@/components/ui";
+import { Badge, Button, MarkdownContent, PageContainer, Panel } from "@/components/ui";
+import { LINK_PLATFORM_ICONS, LINK_PLATFORM_LABELS } from "@/lib/linkPlatforms";
 
 export default async function UserProfilePage({
   params,
@@ -86,19 +87,29 @@ export default async function UserProfilePage({
         </Panel>
       )}
 
-      {profile.bio && <p>{profile.bio}</p>}
+      {profile.bio && <MarkdownContent>{profile.bio}</MarkdownContent>}
 
       {profile.links.length > 0 && (
         <section className="mb-6">
           <h2 className="mb-2 font-display text-xs text-accent-bright">LINKS</h2>
-          <ul className="list-none space-y-1 p-0">
-            {profile.links.map((link) => (
-              <li key={link.url}>
-                <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-bright">
-                  {link.label}
-                </a>
-              </li>
-            ))}
+          <ul className="flex list-none flex-wrap gap-2 p-0">
+            {profile.links.map((link) => {
+              const Icon = LINK_PLATFORM_ICONS[link.platform];
+              const label = link.platform === "Other" ? (link.label ?? "") : LINK_PLATFORM_LABELS[link.platform];
+              return (
+                <li key={link.url}>
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={label}
+                    className="flex h-12 w-12 items-center justify-center rounded-md border-2 border-border text-text-muted transition-colors hover:border-accent hover:text-accent-bright"
+                  >
+                    <Icon size={22} />
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </section>
       )}

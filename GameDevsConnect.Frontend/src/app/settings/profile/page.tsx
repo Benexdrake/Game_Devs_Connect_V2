@@ -1,10 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { CurrentUser, Skill, UserLink, UserProfile } from "@/lib/types";
-import { Button, Input, PageContainer, Textarea } from "@/components/ui";
+import { useRouter } from "next/navigation";
+import clsx from "clsx";
+import { SKILL_CATEGORY_LABELS, type CurrentUser, type Skill, type SkillCategory, type UserLink, type UserProfile } from "@/lib/types";
+import { LINK_PLATFORMS, LINK_PLATFORM_LABELS } from "@/lib/linkPlatforms";
+import { Button, Input, MarkdownEditor, PageContainer, Select } from "@/components/ui";
 
 export default function ProfileSettingsPage() {
+  const router = useRouter();
   const [me, setMe] = useState<CurrentUser | null>(null);
   const [allSkills, setAllSkills] = useState<Skill[]>([]);
   const [bio, setBio] = useState("");
@@ -63,7 +67,7 @@ export default function ProfileSettingsPage() {
   }
 
   function addLink() {
-    setLinks((prev) => [...prev, { label: "", url: "" }]);
+    setLinks((prev) => [...prev, { platform: LINK_PLATFORMS[0], label: null, url: "" }]);
   }
 
   function removeLink(index: number) {
@@ -71,6 +75,7 @@ export default function ProfileSettingsPage() {
   }
 
   async function handleSave() {
+    if (!me) return;
     setSaving(true);
     setMessage(null);
     try {
@@ -78,7 +83,10 @@ export default function ProfileSettingsPage() {
         method: "PATCH",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bio, links: links.filter((l) => l.label && l.url) }),
+        body: JSON.stringify({
+          bio,
+          links: links.filter((l) => l.url && (l.platform !== "Other" || l.label)),
+        }),
       });
       const skillsRes = await fetch("/api/users/me/skills", {
         method: "PUT",
@@ -86,7 +94,11 @@ export default function ProfileSettingsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ skillIds: Array.from(selectedSkillIds) }),
       });
-      setMessage(profileRes.ok && skillsRes.ok ? "Gespeichert." : "Speichern fehlgeschlagen.");
+      if (profileRes.ok && skillsRes.ok) {
+        router.push(`/users/${encodeURIComponent(me.username)}`);
+        return;
+      }
+      setMessage("Speichern fehlgeschlagen.");
     } finally {
       setSaving(false);
     }
@@ -104,13 +116,25 @@ export default function ProfileSettingsPage() {
     <PageContainer>
       <h1 className="mb-6 font-display text-sm text-accent-bright">PROFIL BEARBEITEN</h1>
 
-      <label htmlFor="bio" className="mb-1 block text-sm text-text-muted">Bio</label>
-      <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={4} className="mb-6" />
+      <label className="mb-1 block text-sm text-text-muted">Bio</label>
+      <MarkdownEditor value={bio} onChange={setBio} maxLength={1000} maxUploads={2} className="mb-6" />
 
       <h2 className="mb-2 font-display text-xs text-accent-bright">LINKS</h2>
       {links.map((link, index) => (
         <div key={index} className="mb-2 flex gap-2">
-          <Input placeholder="Label" value={link.label} onChange={(e) => updateLink(index, "label", e.target.value)} className="w-32" />
+          <Select value={link.platform} onChange={(e) => updateLink(index, "platform", e.target.value)} className="w-40">
+            {LINK_PLATFORMS.map((platform) => (
+              <option key={platform} value={platform}>{LINK_PLATFORM_LABELS[platform]}</option>
+            ))}
+          </Select>
+          {link.platform === "Other" && (
+            <Input
+              placeholder="Label"
+              value={link.label ?? ""}
+              onChange={(e) => updateLink(index, "label", e.target.value)}
+              className="w-32"
+            />
+          )}
           <Input placeholder="URL" value={link.url} onChange={(e) => updateLink(index, "url", e.target.value)} className="flex-1" />
           <Button type="button" variant="danger" onClick={() => removeLink(index)}>
             Entfernen
@@ -124,18 +148,18 @@ export default function ProfileSettingsPage() {
       <h2 className="mb-2 mt-6 font-display text-xs text-accent-bright">SKILLS</h2>
       {Object.entries(skillsByCategory).map(([category, skills]) => (
         <fieldset key={category} className="mb-3 rounded-md border border-border p-3">
-          <legend className="px-1 text-sm text-text-muted">{category}</legend>
-          <div className="flex flex-wrap gap-3">
+          <legend className="px-1 text-sm text-text-muted">{SKILL_CATEGORY_LABELS[category as SkillCategory]}</legend>
+          <div className="flex flex-wrap gap-2">
             {skills.map((skill) => (
-              <label key={skill.id} className="flex items-center gap-1.5 text-sm">
-                <input
-                  type="checkbox"
-                  checked={selectedSkillIds.has(skill.id)}
-                  onChange={() => toggleSkill(skill.id)}
-                  className="accent-accent"
-                />
+              <Button
+                key={skill.id}
+                type="button"
+                variant={selectedSkillIds.has(skill.id) ? "primary" : "secondary"}
+                onClick={() => toggleSkill(skill.id)}
+                className={clsx(selectedSkillIds.has(skill.id) && "border-accent-bright")}
+              >
                 {skill.name}
-              </label>
+              </Button>
             ))}
           </div>
         </fieldset>
