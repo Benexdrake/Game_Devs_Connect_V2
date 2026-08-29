@@ -41,7 +41,12 @@ export function LeftNav() {
     <nav
       className={clsx(
         "fixed inset-x-0 bottom-0 z-20 flex flex-row justify-around gap-2 border-t-2 border-border-strong bg-surface p-2",
-        "lg:inset-x-auto lg:top-1/2 lg:left-4 lg:bottom-auto lg:flex-col lg:justify-start lg:gap-3 lg:-translate-y-1/2 lg:rounded-lg lg:border-2 lg:p-3",
+        // left-edge tracks the centered max-w-3xl content column (half of
+        // 768px, plus this nav's own ~72px width and a 24px gap) instead of
+        // hugging the viewport edge, so it sits right next to content like
+        // on X regardless of how wide the window is. Falls back to 1rem
+        // from the edge once the viewport is too narrow for that gap.
+        "lg:inset-x-auto lg:top-1/2 lg:left-[max(1rem,calc(50vw-480px))] lg:bottom-auto lg:flex-col lg:justify-start lg:gap-3 lg:-translate-y-1/2 lg:rounded-lg lg:border-2 lg:p-3",
       )}
     >
       {items.map((item) => {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { apiFetchJson } from "@/lib/api";
 import type { SearchResults } from "@/lib/types";
 import { PageContainer, Panel } from "@/components/ui";
+import { SearchForm } from "./SearchForm";
 
 export default async function SearchPage({
   searchParams,
@@ -13,9 +14,9 @@ export default async function SearchPage({
 
   return (
     <PageContainer>
-      <h1 className="mb-6 font-display text-sm text-accent-bright">
-        SUCHE{q ? `: "${q}"` : ""}
-      </h1>
+      <h1 className="mb-4 font-display text-sm text-accent-bright">SUCHE</h1>
+
+      <SearchForm initialQuery={q ?? ""} />
 
       {!q && <p className="text-text-muted">Bitte einen Suchbegriff eingeben.</p>}
 

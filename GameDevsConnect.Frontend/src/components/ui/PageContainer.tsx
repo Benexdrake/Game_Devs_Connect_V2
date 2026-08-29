@@ -8,7 +8,7 @@ import clsx from "clsx";
 // matches the top bar's max-width so content and nav sit in one shared
 // centered block (like X).
 const WIDTHS = {
-  page: "max-w-[1200px]",
+  page: "max-w-3xl",
   xl: "max-w-xl",
   md: "max-w-md",
 } as const;

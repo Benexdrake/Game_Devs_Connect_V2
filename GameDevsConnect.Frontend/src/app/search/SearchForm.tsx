@@ -2,11 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Input } from "@/components/ui";
+import { Button, Input } from "@/components/ui";
 
-export function SearchBar() {
+export function SearchForm({ initialQuery }: { initialQuery: string }) {
   const router = useRouter();
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(initialQuery);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -15,14 +15,16 @@ export function SearchBar() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="ml-2 w-48 sm:w-64">
+    <form onSubmit={handleSubmit} className="mb-6 flex gap-2">
       <Input
         type="search"
         placeholder="Suche Projekte, Quests, User..."
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        className="py-1.5"
+        autoFocus
+        className="flex-1"
       />
+      <Button type="submit">Suchen</Button>
     </form>
   );
 }
