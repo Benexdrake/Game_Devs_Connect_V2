@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { apiFetchJson } from "@/lib/api";
-import type { CurrentUser, UserProfile } from "@/lib/types";
+import type { CurrentUser, UserProfile, XpSummary } from "@/lib/types";
 
 export default async function UserProfilePage({
   params,
@@ -9,9 +9,10 @@ export default async function UserProfilePage({
   params: Promise<{ username: string }>;
 }) {
   const { username } = await params;
-  const [profile, me] = await Promise.all([
+  const [profile, me, xp] = await Promise.all([
     apiFetchJson<UserProfile>(`/api/users/${encodeURIComponent(username)}`),
     apiFetchJson<CurrentUser>("/api/auth/me"),
+    apiFetchJson<XpSummary>(`/api/users/${encodeURIComponent(username)}/xp-summary`),
   ]);
 
   if (!profile) {
@@ -19,6 +20,9 @@ export default async function UserProfilePage({
   }
 
   const isOwnProfile = me?.id === profile.id;
+
+  const levelSpan = xp ? xp.xpForNextLevel - xp.xpForCurrentLevel : 0;
+  const levelProgress = xp && levelSpan > 0 ? (xp.totalXp - xp.xpForCurrentLevel) / levelSpan : 0;
 
   return (
     <main style={{ maxWidth: 720, margin: "0 auto", padding: "2rem 1rem" }}>
@@ -38,6 +42,28 @@ export default async function UserProfilePage({
           {isOwnProfile && <Link href="/settings/profile">Profil bearbeiten</Link>}
         </div>
       </div>
+
+      {xp && (
+        <section style={{ margin: "1rem 0" }}>
+          <p style={{ margin: 0 }}>
+            <strong>Level {xp.level}</strong> · {xp.totalXp} XP ·{" "}
+            {xp.reputation === null ? "Reputation: noch keine Daten" : `Reputation: ${xp.reputation} / 5`}
+          </p>
+          <div style={{ background: "#eee", borderRadius: 4, height: 8, marginTop: "0.25rem", overflow: "hidden" }}>
+            <div
+              style={{
+                background: "#4a90d9",
+                height: "100%",
+                width: `${Math.round(Math.min(1, Math.max(0, levelProgress)) * 100)}%`,
+              }}
+            />
+          </div>
+          <p style={{ margin: "0.25rem 0 0", color: "#666", fontSize: "0.9em" }}>
+            {xp.totalXp} / {xp.xpForNextLevel} XP bis Level {xp.level + 1} · {xp.completedQuests} Completed Quests ·{" "}
+            {xp.acceptedContributions} Accepted Contributions
+          </p>
+        </section>
+      )}
 
       {profile.bio && <p>{profile.bio}</p>}
 

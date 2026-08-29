@@ -3,6 +3,7 @@ using GameDevsConnect.Api.Modules.Projects.Domain;
 using GameDevsConnect.Api.Modules.Quests.Domain;
 using GameDevsConnect.Api.Modules.Skills.Domain;
 using GameDevsConnect.Api.Modules.Users.Domain;
+using GameDevsConnect.Api.Modules.Xp.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameDevsConnect.Api.Infrastructure.Persistence;
@@ -24,6 +25,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<SubmissionFile> SubmissionFiles => Set<SubmissionFile>();
     public DbSet<SubmissionLink> SubmissionLinks => Set<SubmissionLink>();
     public DbSet<Contribution> Contributions => Set<Contribution>();
+    public DbSet<XpTransaction> XpTransactions => Set<XpTransaction>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

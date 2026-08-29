@@ -131,3 +131,13 @@ export type UserContribution = {
   questTitle: string;
   createdAt: string;
 };
+
+export type XpSummary = {
+  totalXp: number;
+  level: number;
+  xpForCurrentLevel: number;
+  xpForNextLevel: number;
+  reputation: number | null;
+  completedQuests: number;
+  acceptedContributions: number;
+};

@@ -3,6 +3,7 @@ using GameDevsConnect.Api.Modules.Contributions.Domain;
 using GameDevsConnect.Api.Modules.Projects;
 using GameDevsConnect.Api.Modules.Projects.Domain;
 using GameDevsConnect.Api.Modules.Quests.Domain;
+using GameDevsConnect.Api.Modules.Xp.Commands;
 using GameDevsConnect.Api.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,7 @@ public record ReviewSubmissionCommand(
     SubmissionDecision Decision,
     string? Comment) : IRequest<Result<SubmissionDto>>;
 
-public class ReviewSubmissionCommandHandler(AppDbContext db) : IRequestHandler<ReviewSubmissionCommand, Result<SubmissionDto>>
+public class ReviewSubmissionCommandHandler(AppDbContext db, IMediator mediator) : IRequestHandler<ReviewSubmissionCommand, Result<SubmissionDto>>
 {
     public async Task<Result<SubmissionDto>> Handle(ReviewSubmissionCommand request, CancellationToken cancellationToken)
     {
@@ -85,7 +86,10 @@ public class ReviewSubmissionCommandHandler(AppDbContext db) : IRequestHandler<R
                     SubmissionId = submission.Id,
                     CreatedAt = now,
                 });
-                // TODO Phase 4: award XP for this accepted contribution.
+
+                await mediator.Send(
+                    new AwardXpCommand(submission.UserId, quest.Difficulty, quest.XpReward, "Quest", quest.Id),
+                    cancellationToken);
                 break;
         }
 
