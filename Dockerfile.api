@@ -3,11 +3,11 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 COPY GameDevsConnect.slnx ./
-COPY src/GameDevsConnect.Api/GameDevsConnect.Api.csproj src/GameDevsConnect.Api/
-RUN dotnet restore src/GameDevsConnect.Api/GameDevsConnect.Api.csproj
+COPY GameDevsConnect.Api/GameDevsConnect.Api.csproj GameDevsConnect.Api/
+RUN dotnet restore GameDevsConnect.Api/GameDevsConnect.Api.csproj
 
-COPY src/GameDevsConnect.Api/. src/GameDevsConnect.Api/
-RUN dotnet publish src/GameDevsConnect.Api/GameDevsConnect.Api.csproj -c Release -o /app/publish --no-restore
+COPY GameDevsConnect.Api/. GameDevsConnect.Api/
+RUN dotnet publish GameDevsConnect.Api/GameDevsConnect.Api.csproj -c Release -o /app/publish --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app

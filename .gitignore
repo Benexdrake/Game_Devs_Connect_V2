@@ -2,7 +2,7 @@
 bin/
 obj/
 *.user
-src/GameDevsConnect.Api/uploads/
+GameDevsConnect.Api/uploads/
 
 # Node / Next.js
 node_modules/
@@ -24,3 +24,5 @@ next-env.d.ts
 # Logs
 *.log
 npm-debug.log*
+
+graphify-out

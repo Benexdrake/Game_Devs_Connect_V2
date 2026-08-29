@@ -1,5 +1,3 @@
 <Solution>
-  <Folder Name="/src/">
-    <Project Path="src/GameDevsConnect.Api/GameDevsConnect.Api.csproj" />
-  </Folder>
+  <Project Path="GameDevsConnect.Api/GameDevsConnect.Api.csproj" />
 </Solution>

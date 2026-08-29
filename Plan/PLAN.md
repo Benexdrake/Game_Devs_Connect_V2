@@ -97,9 +97,8 @@ kaum externe Integrationen hat (nur GitHub OAuth).
 **Solution-/Projektstruktur:**
 
 ```
-GameDevsConnect.sln
-src/
-  GameDevsConnect.Api/
+GameDevsConnect.slnx
+GameDevsConnect.Api/
     Program.cs                         # Modul-Registrierungen + Middleware, bewusst schlank
     Modules/
       Auth/
