@@ -2,17 +2,23 @@ using GameDevsConnect.Api.Infrastructure.Persistence;
 using GameDevsConnect.Api.Modules.Auth.Endpoints;
 using GameDevsConnect.Api.Modules.Auth.GitHub;
 using GameDevsConnect.Api.Modules.Contributions.Endpoints;
+using GameDevsConnect.Api.Modules.Engines.Endpoints;
+using GameDevsConnect.Api.Modules.Genres.Endpoints;
+using GameDevsConnect.Api.Modules.Notifications;
 using GameDevsConnect.Api.Modules.Notifications.Endpoints;
 using GameDevsConnect.Api.Modules.Projects.Endpoints;
 using GameDevsConnect.Api.Modules.Quests.Endpoints;
 using GameDevsConnect.Api.Modules.Search.Endpoints;
 using GameDevsConnect.Api.Modules.Skills.Endpoints;
 using GameDevsConnect.Api.Modules.Social.Endpoints;
+using GameDevsConnect.Api.Modules.Uploads.Endpoints;
 using GameDevsConnect.Api.Modules.Users.Endpoints;
 using GameDevsConnect.Api.Modules.Xp;
 using GameDevsConnect.Api.Modules.Xp.Endpoints;
 using GameDevsConnect.Api.Shared.Storage;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -33,6 +39,8 @@ builder.Services.AddSingleton<IFileStorage, LocalFileStorage>();
 builder.Services.Configure<XpOptions>(builder.Configuration.GetSection(XpOptions.SectionName));
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+builder.Services.AddHostedService<NotificationCleanupService>();
 
 // Whether cookies require HTTPS. True behind the Caddy/TLS setup on the VPS,
 // false for plain-HTTP local runs (dotnet run, or docker compose without the
@@ -77,16 +85,28 @@ using (var scope = app.Services.CreateScope())
     scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
 }
 
+var uploadsPath = Path.GetFullPath(app.Services.GetRequiredService<IOptions<StorageOptions>>().Value.UploadsPath);
+Directory.CreateDirectory(uploadsPath);
+
 app.UseCors("Frontend");
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads",
+});
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAuthEndpoints();
+app.MapGitHubEndpoints();
 app.MapUserEndpoints();
 app.MapSkillEndpoints();
+app.MapEngineEndpoints();
+app.MapGenreEndpoints();
 app.MapProjectEndpoints();
 app.MapQuestEndpoints();
 app.MapContributionEndpoints();
+app.MapUploadEndpoints();
 app.MapXpEndpoints();
 app.MapSocialEndpoints();
 app.MapNotificationEndpoints();

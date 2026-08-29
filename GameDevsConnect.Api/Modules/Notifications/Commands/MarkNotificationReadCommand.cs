@@ -18,8 +18,12 @@ public class MarkNotificationReadCommandHandler(AppDbContext db) : IRequestHandl
             return Result<bool>.NotFound("Notification not found.");
         }
 
-        notification.IsRead = true;
-        await db.SaveChangesAsync(cancellationToken);
+        if (!notification.IsRead)
+        {
+            notification.IsRead = true;
+            notification.ReadAt = DateTimeOffset.UtcNow;
+            await db.SaveChangesAsync(cancellationToken);
+        }
 
         return Result<bool>.Success(true);
     }
@@ -31,9 +35,13 @@ public class MarkAllNotificationsReadCommandHandler(AppDbContext db) : IRequestH
 {
     public async Task<Result<bool>> Handle(MarkAllNotificationsReadCommand request, CancellationToken cancellationToken)
     {
+        var now = DateTimeOffset.UtcNow;
+
         await db.Notifications
             .Where(n => n.UserId == request.RequestingUserId && !n.IsRead)
-            .ExecuteUpdateAsync(setters => setters.SetProperty(n => n.IsRead, true), cancellationToken);
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(n => n.IsRead, true)
+                .SetProperty(n => n.ReadAt, now), cancellationToken);
 
         return Result<bool>.Success(true);
     }

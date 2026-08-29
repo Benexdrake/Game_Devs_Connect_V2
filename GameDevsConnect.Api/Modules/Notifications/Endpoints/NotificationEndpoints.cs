@@ -29,5 +29,11 @@ public static class NotificationEndpoints
             var result = await mediator.Send(new MarkAllNotificationsReadCommand(http.GetUserId()), ct);
             return result.ToHttpResult();
         });
+
+        group.MapDelete("/{id:guid}", async (Guid id, IMediator mediator, HttpContext http, CancellationToken ct) =>
+        {
+            var result = await mediator.Send(new DeleteNotificationCommand(id, http.GetUserId()), ct);
+            return result.ToHttpResult();
+        });
     }
 }

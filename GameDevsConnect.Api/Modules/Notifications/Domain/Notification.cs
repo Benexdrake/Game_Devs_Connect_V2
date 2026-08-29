@@ -15,5 +15,7 @@ public class Notification
     public required string Message { get; set; }
     public Guid? ActivityEventId { get; set; }
     public bool IsRead { get; set; }
+    /// <summary>Set the moment IsRead flips to true - the cleanup job deletes rows 24h past this.</summary>
+    public DateTimeOffset? ReadAt { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
 }
