@@ -389,7 +389,13 @@ export function ProjectView({
             <ul style={{ listStyle: "none", padding: 0 }}>
               {activity.map((event) => (
                 <li key={event.id} style={{ borderBottom: "1px solid #eee", padding: "0.5rem 0" }}>
-                  <p style={{ margin: 0 }}>{event.summary}</p>
+                  {event.linkUrl ? (
+                    <Link href={event.linkUrl} style={{ margin: 0 }}>
+                      {event.summary}
+                    </Link>
+                  ) : (
+                    <p style={{ margin: 0 }}>{event.summary}</p>
+                  )}
                   <p style={{ margin: 0, fontSize: "0.8em", color: "#888" }}>{new Date(event.createdAt).toLocaleString()}</p>
                 </li>
               ))}

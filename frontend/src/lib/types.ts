@@ -155,6 +155,7 @@ export type ActivityEvent = {
   projectSlug: string | null;
   projectTitle: string | null;
   summary: string;
+  linkUrl: string | null;
   createdAt: string;
 };
 

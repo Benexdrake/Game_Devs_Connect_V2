@@ -59,6 +59,7 @@ public class GetFeedQueryHandler(AppDbContext db) : IRequestHandler<GetFeedQuery
                 project?.Slug,
                 project?.Title,
                 ActivityEventSummaryBuilder.Build(e.Type, e.Payload, actorUsername, project?.Title),
+                ActivityEventSummaryBuilder.BuildLink(e.Type, e.Payload, actorUsername, project?.Slug),
                 e.CreatedAt);
         }).ToList();
     }

@@ -12,6 +12,7 @@ public record ActivityEventDto(
     string? ProjectSlug,
     string? ProjectTitle,
     string Summary,
+    string? LinkUrl,
     DateTimeOffset CreatedAt);
 
 internal static class ActivityEventSummaryBuilder
@@ -34,6 +35,25 @@ internal static class ActivityEventSummaryBuilder
             ActivityEventType.LevelUp =>
                 $"{actorUsername} reached level {GetInt(root, "newLevel")}",
             _ => $"{actorUsername} did something.",
+        };
+    }
+
+    // Where clicking the feed/activity item should take you. Quest-related
+    // events link straight to the quest, everything else falls back to the
+    // project (or the actor's profile for a level-up, which has no project).
+    public static string? BuildLink(ActivityEventType type, string? payloadJson, string actorUsername, string? projectSlug)
+    {
+        using var doc = string.IsNullOrEmpty(payloadJson) ? null : JsonDocument.Parse(payloadJson);
+        var root = doc?.RootElement;
+
+        return type switch
+        {
+            ActivityEventType.QuestCreated or ActivityEventType.ContributionAccepted =>
+                GetString(root, "questId") is { } questId ? $"/quests/{questId}" : null,
+            ActivityEventType.MemberJoined or ActivityEventType.ProjectPosted =>
+                projectSlug is not null ? $"/projects/{projectSlug}" : null,
+            ActivityEventType.LevelUp => $"/users/{actorUsername}",
+            _ => null,
         };
     }
 
