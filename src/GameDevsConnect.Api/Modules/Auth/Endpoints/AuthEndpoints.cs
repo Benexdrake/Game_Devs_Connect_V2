@@ -27,7 +27,7 @@ public static class AuthEndpoints
             http.Response.Cookies.Append(OAuthStateCookie, result.Value!.State, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = !app.Environment.IsDevelopment(),
+                Secure = app.Configuration.GetValue("Cookies:RequireHttps", true),
                 SameSite = SameSiteMode.Lax,
                 MaxAge = TimeSpan.FromMinutes(10),
             });

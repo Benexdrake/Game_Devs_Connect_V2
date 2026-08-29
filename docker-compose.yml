@@ -27,6 +27,7 @@ services:
       GitHub__CallbackUrl: ${GITHUB_CALLBACK_URL}
       Frontend__BaseUrl: ${FRONTEND_BASE_URL}
       Cors__AllowedOrigins__0: ${FRONTEND_BASE_URL}
+      Cookies__RequireHttps: ${COOKIES_REQUIRE_HTTPS:-true}
     ports:
       - "8080:8080"
     depends_on:

@@ -11,6 +11,10 @@ RUN dotnet publish src/GameDevsConnect.Api/GameDevsConnect.Api.csproj -c Release
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
+# Npgsql loads libgssapi_krb5 for GSSAPI auth support even though we use password auth;
+# without it Npgsql logs a harmless but noisy "cannot open shared object file" error.
+RUN apt-get update && apt-get install -y --no-install-recommends libkrb5-3 \
+    && rm -rf /var/lib/apt/lists/*
 COPY --from=build /app/publish .
 
 EXPOSE 8080

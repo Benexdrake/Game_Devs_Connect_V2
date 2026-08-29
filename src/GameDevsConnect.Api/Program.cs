@@ -14,6 +14,12 @@ builder.Services.AddHttpClient<GitHubOAuthClient>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
+// Whether cookies require HTTPS. True behind the Caddy/TLS setup on the VPS,
+// false for plain-HTTP local runs (dotnet run, or docker compose without the
+// "proxy" profile) - deliberately independent of ASPNETCORE_ENVIRONMENT, since
+// docker compose runs the api in Production mode even without TLS in front.
+var requireHttps = builder.Configuration.GetValue("Cookies:RequireHttps", true);
+
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -21,9 +27,9 @@ builder.Services
         options.Cookie.Name = "gdc_session";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Lax;
-        options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
-            ? CookieSecurePolicy.SameAsRequest
-            : CookieSecurePolicy.Always;
+        options.Cookie.SecurePolicy = requireHttps
+            ? CookieSecurePolicy.Always
+            : CookieSecurePolicy.None;
         options.ExpireTimeSpan = TimeSpan.FromDays(30);
         options.SlidingExpiration = true;
         options.Events.OnRedirectToLogin = context =>
@@ -45,6 +51,11 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
+}
 
 app.UseCors("Frontend");
 app.UseAuthentication();
