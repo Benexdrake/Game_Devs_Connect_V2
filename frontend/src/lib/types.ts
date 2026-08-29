@@ -32,6 +32,7 @@ export type UserProfile = {
   skills: Skill[];
   projects: UserProjectSummary[];
   contributions: UserContribution[];
+  isFollowedByMe: boolean;
 };
 
 export type ProjectMember = {
@@ -54,6 +55,7 @@ export type Project = {
   visibility: ProjectVisibility;
   tags: string[];
   members: ProjectMember[];
+  isFollowedByMe: boolean;
   createdAt: string;
 };
 
@@ -141,3 +143,46 @@ export type XpSummary = {
   completedQuests: number;
   acceptedContributions: number;
 };
+
+export type ActivityEventType = "QuestCreated" | "ContributionAccepted" | "MemberJoined" | "ProjectPosted" | "LevelUp";
+
+export type ActivityEvent = {
+  id: string;
+  type: ActivityEventType;
+  actorUserId: string;
+  actorUsername: string;
+  projectId: string | null;
+  projectSlug: string | null;
+  projectTitle: string | null;
+  summary: string;
+  createdAt: string;
+};
+
+export type PostAttachmentEntry = { id: string; fileName: string; contentType: string };
+
+export type Comment = { id: string; authorId: string; authorUsername: string; body: string; createdAt: string };
+
+export type Post = {
+  id: string;
+  projectId: string;
+  authorId: string;
+  authorUsername: string;
+  body: string;
+  createdAt: string;
+  attachments: PostAttachmentEntry[];
+  comments: Comment[];
+  likeCount: number;
+  likedByMe: boolean;
+};
+
+export type NotificationType = "SubmissionReviewed" | "NewQuestInFollowedProject" | "NewFollower";
+
+export type Notification = {
+  id: string;
+  type: NotificationType;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+};
+
+export type NotificationsResult = { items: Notification[]; unreadCount: number };

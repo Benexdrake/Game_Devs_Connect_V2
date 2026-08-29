@@ -1,5 +1,6 @@
 using GameDevsConnect.Api.Infrastructure.Persistence;
 using GameDevsConnect.Api.Modules.Projects.Domain;
+using GameDevsConnect.Api.Modules.Social.Events;
 using GameDevsConnect.Api.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ public record AddProjectMemberCommand(
     string Username,
     ProjectRole Role) : IRequest<Result<ProjectMemberDto>>;
 
-public class AddProjectMemberCommandHandler(AppDbContext db)
+public class AddProjectMemberCommandHandler(AppDbContext db, IMediator mediator)
     : IRequestHandler<AddProjectMemberCommand, Result<ProjectMemberDto>>
 {
     public async Task<Result<ProjectMemberDto>> Handle(AddProjectMemberCommand request, CancellationToken cancellationToken)
@@ -56,6 +57,8 @@ public class AddProjectMemberCommandHandler(AppDbContext db)
         };
         db.ProjectMembers.Add(member);
         await db.SaveChangesAsync(cancellationToken);
+
+        await mediator.Publish(new ProjectMemberJoinedEvent(project.Id, targetUser.Id), cancellationToken);
 
         return Result<ProjectMemberDto>.Success(
             new ProjectMemberDto(targetUser.Id, targetUser.Username, targetUser.AvatarUrl, member.Role));

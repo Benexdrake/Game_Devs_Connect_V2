@@ -7,8 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameDevsConnect.Api.Modules.Contributions.Commands;
 
-public record UploadedFileInput(string FileName, string ContentType, long SizeBytes, Stream Content);
-
 public record UploadSubmissionFilesCommand(
     Guid SubmissionId,
     Guid RequestingUserId,

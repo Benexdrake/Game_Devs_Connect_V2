@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
+import { NotificationBell } from "./NotificationBell";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,10 +23,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <header style={{ padding: "0.75rem 1rem", borderBottom: "1px solid #ccc" }}>
+        <header style={{ padding: "0.75rem 1rem", borderBottom: "1px solid #ccc", display: "flex", alignItems: "center" }}>
           <Link href="/" style={{ fontWeight: 600, textDecoration: "none" }}>
             ← Gamedevs Connect
           </Link>
+          <NotificationBell />
         </header>
         {children}
       </body>

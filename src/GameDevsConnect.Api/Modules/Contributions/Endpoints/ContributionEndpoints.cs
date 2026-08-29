@@ -2,6 +2,7 @@ using GameDevsConnect.Api.Modules.Contributions.Commands;
 using GameDevsConnect.Api.Modules.Contributions.Queries;
 using GameDevsConnect.Api.Shared.Endpoints;
 using GameDevsConnect.Api.Shared.Http;
+using GameDevsConnect.Api.Shared.Storage;
 using MediatR;
 
 namespace GameDevsConnect.Api.Modules.Contributions.Endpoints;

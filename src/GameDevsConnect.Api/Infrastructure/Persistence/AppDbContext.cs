@@ -1,7 +1,9 @@
 using GameDevsConnect.Api.Modules.Contributions.Domain;
+using GameDevsConnect.Api.Modules.Notifications.Domain;
 using GameDevsConnect.Api.Modules.Projects.Domain;
 using GameDevsConnect.Api.Modules.Quests.Domain;
 using GameDevsConnect.Api.Modules.Skills.Domain;
+using GameDevsConnect.Api.Modules.Social.Domain;
 using GameDevsConnect.Api.Modules.Users.Domain;
 using GameDevsConnect.Api.Modules.Xp.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +28,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<SubmissionLink> SubmissionLinks => Set<SubmissionLink>();
     public DbSet<Contribution> Contributions => Set<Contribution>();
     public DbSet<XpTransaction> XpTransactions => Set<XpTransaction>();
+    public DbSet<Follow> Follows => Set<Follow>();
+    public DbSet<Post> Posts => Set<Post>();
+    public DbSet<PostAttachment> PostAttachments => Set<PostAttachment>();
+    public DbSet<Comment> Comments => Set<Comment>();
+    public DbSet<Like> Likes => Set<Like>();
+    public DbSet<ActivityEvent> ActivityEvents => Set<ActivityEvent>();
+    public DbSet<Notification> Notifications => Set<Notification>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

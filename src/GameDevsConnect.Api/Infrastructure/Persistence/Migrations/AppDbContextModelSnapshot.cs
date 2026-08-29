@@ -156,6 +156,41 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                     b.ToTable("submission_links", (string)null);
                 });
 
+            modelBuilder.Entity("GameDevsConnect.Api.Modules.Notifications.Domain.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ActivityEventId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityEventId");
+
+                    b.HasIndex("UserId", "CreatedAt");
+
+                    b.ToTable("notifications", (string)null);
+                });
+
             modelBuilder.Entity("GameDevsConnect.Api.Modules.Projects.Domain.Project", b =>
                 {
                     b.Property<Guid>("Id")
@@ -485,6 +520,177 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("GameDevsConnect.Api.Modules.Social.Domain.ActivityEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ActorUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Payload")
+                        .HasColumnType("jsonb");
+
+                    b.Property<Guid?>("ProjectId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActorUserId");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("activity_events", (string)null);
+                });
+
+            modelBuilder.Entity("GameDevsConnect.Api.Modules.Social.Domain.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("comments", (string)null);
+                });
+
+            modelBuilder.Entity("GameDevsConnect.Api.Modules.Social.Domain.Follow", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("FollowerUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TargetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TargetType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FollowerUserId", "TargetType", "TargetId")
+                        .IsUnique();
+
+                    b.ToTable("follows", (string)null);
+                });
+
+            modelBuilder.Entity("GameDevsConnect.Api.Modules.Social.Domain.Like", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("UserId", "PostId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("likes", (string)null);
+                });
+
+            modelBuilder.Entity("GameDevsConnect.Api.Modules.Social.Domain.Post", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("posts", (string)null);
+                });
+
+            modelBuilder.Entity("GameDevsConnect.Api.Modules.Social.Domain.PostAttachment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("StoragePath")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("post_attachments", (string)null);
+                });
+
             modelBuilder.Entity("GameDevsConnect.Api.Modules.Users.Domain.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -659,6 +865,20 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("GameDevsConnect.Api.Modules.Notifications.Domain.Notification", b =>
+                {
+                    b.HasOne("GameDevsConnect.Api.Modules.Social.Domain.ActivityEvent", null)
+                        .WithMany()
+                        .HasForeignKey("ActivityEventId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("GameDevsConnect.Api.Modules.Users.Domain.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("GameDevsConnect.Api.Modules.Projects.Domain.ProjectMember", b =>
                 {
                     b.HasOne("GameDevsConnect.Api.Modules.Projects.Domain.Project", null)
@@ -730,6 +950,83 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                     b.HasOne("GameDevsConnect.Api.Modules.Skills.Domain.Skill", null)
                         .WithMany()
                         .HasForeignKey("SkillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GameDevsConnect.Api.Modules.Social.Domain.ActivityEvent", b =>
+                {
+                    b.HasOne("GameDevsConnect.Api.Modules.Users.Domain.User", null)
+                        .WithMany()
+                        .HasForeignKey("ActorUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GameDevsConnect.Api.Modules.Projects.Domain.Project", null)
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("GameDevsConnect.Api.Modules.Social.Domain.Comment", b =>
+                {
+                    b.HasOne("GameDevsConnect.Api.Modules.Users.Domain.User", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GameDevsConnect.Api.Modules.Social.Domain.Post", null)
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GameDevsConnect.Api.Modules.Social.Domain.Follow", b =>
+                {
+                    b.HasOne("GameDevsConnect.Api.Modules.Users.Domain.User", null)
+                        .WithMany()
+                        .HasForeignKey("FollowerUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GameDevsConnect.Api.Modules.Social.Domain.Like", b =>
+                {
+                    b.HasOne("GameDevsConnect.Api.Modules.Social.Domain.Post", null)
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GameDevsConnect.Api.Modules.Users.Domain.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GameDevsConnect.Api.Modules.Social.Domain.Post", b =>
+                {
+                    b.HasOne("GameDevsConnect.Api.Modules.Users.Domain.User", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GameDevsConnect.Api.Modules.Projects.Domain.Project", null)
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GameDevsConnect.Api.Modules.Social.Domain.PostAttachment", b =>
+                {
+                    b.HasOne("GameDevsConnect.Api.Modules.Social.Domain.Post", null)
+                        .WithMany()
+                        .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

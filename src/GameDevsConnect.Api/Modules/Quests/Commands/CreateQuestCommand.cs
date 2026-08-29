@@ -3,6 +3,7 @@ using GameDevsConnect.Api.Modules.Projects;
 using GameDevsConnect.Api.Modules.Projects.Domain;
 using GameDevsConnect.Api.Modules.Quests.Domain;
 using GameDevsConnect.Api.Modules.Skills.Domain;
+using GameDevsConnect.Api.Modules.Social.Events;
 using GameDevsConnect.Api.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,7 @@ public record CreateQuestCommand(
     int? MaxContributors,
     IReadOnlyList<Guid>? RequiredSkillIds) : IRequest<Result<QuestDto>>;
 
-public class CreateQuestCommandHandler(AppDbContext db) : IRequestHandler<CreateQuestCommand, Result<QuestDto>>
+public class CreateQuestCommandHandler(AppDbContext db, IMediator mediator) : IRequestHandler<CreateQuestCommand, Result<QuestDto>>
 {
     public async Task<Result<QuestDto>> Handle(CreateQuestCommand request, CancellationToken cancellationToken)
     {
@@ -66,6 +67,9 @@ public class CreateQuestCommandHandler(AppDbContext db) : IRequestHandler<Create
         }
 
         await db.SaveChangesAsync(cancellationToken);
+
+        await mediator.Publish(
+            new QuestCreatedEvent(quest.Id, project.Id, request.RequestingUserId, quest.Title), cancellationToken);
 
         return Result<QuestDto>.Success(await QuestDtoBuilder.BuildAsync(db, quest, cancellationToken));
     }

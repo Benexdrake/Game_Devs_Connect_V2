@@ -1,5 +1,6 @@
 using GameDevsConnect.Api.Infrastructure.Persistence;
 using GameDevsConnect.Api.Modules.Quests.Domain;
+using GameDevsConnect.Api.Modules.Social.Events;
 using GameDevsConnect.Api.Modules.Xp.Domain;
 using GameDevsConnect.Api.Shared;
 using MediatR;
@@ -16,7 +17,7 @@ namespace GameDevsConnect.Api.Modules.Xp.Commands;
 public record AwardXpCommand(Guid UserId, QuestDifficulty Difficulty, int BaseAmount, string SourceType, Guid SourceId)
     : IRequest<Result<int>>;
 
-public class AwardXpCommandHandler(AppDbContext db, IOptions<XpOptions> options)
+public class AwardXpCommandHandler(AppDbContext db, IOptions<XpOptions> options, IMediator mediator)
     : IRequestHandler<AwardXpCommand, Result<int>>
 {
     public async Task<Result<int>> Handle(AwardXpCommand request, CancellationToken cancellationToken)
@@ -40,6 +41,10 @@ public class AwardXpCommandHandler(AppDbContext db, IOptions<XpOptions> options)
 
         if (grantedAmount > 0)
         {
+            var totalXpBefore = await db.XpTransactions
+                .Where(t => t.UserId == request.UserId)
+                .SumAsync(t => (int?)t.Amount, cancellationToken) ?? 0;
+
             db.XpTransactions.Add(new XpTransaction
             {
                 Id = Guid.NewGuid(),
@@ -52,6 +57,13 @@ public class AwardXpCommandHandler(AppDbContext db, IOptions<XpOptions> options)
             });
 
             await db.SaveChangesAsync(cancellationToken);
+
+            var levelBefore = LevelCalculator.LevelForXp(totalXpBefore);
+            var levelAfter = LevelCalculator.LevelForXp(totalXpBefore + grantedAmount);
+            if (levelAfter > levelBefore)
+            {
+                await mediator.Publish(new UserLeveledUpEvent(request.UserId, levelAfter), cancellationToken);
+            }
         }
 
         return Result<int>.Success(grantedAmount);

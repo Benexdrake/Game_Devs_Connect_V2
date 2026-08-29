@@ -32,6 +32,6 @@ public class GetProjectQueryHandler(AppDbContext db)
             }
         }
 
-        return Result<ProjectDto>.Success(await ProjectDtoBuilder.BuildAsync(db, project, cancellationToken));
+        return Result<ProjectDto>.Success(await ProjectDtoBuilder.BuildAsync(db, project, cancellationToken, request.RequestingUserId));
     }
 }

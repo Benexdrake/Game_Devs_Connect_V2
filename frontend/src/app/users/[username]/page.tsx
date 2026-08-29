@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { apiFetchJson } from "@/lib/api";
 import type { CurrentUser, UserProfile, XpSummary } from "@/lib/types";
+import { FollowButton } from "@/app/FollowButton";
 
 export default async function UserProfilePage({
   params,
@@ -40,6 +41,12 @@ export default async function UserProfilePage({
         <div>
           <h1 style={{ margin: 0 }}>{profile.username}</h1>
           {isOwnProfile && <Link href="/settings/profile">Profil bearbeiten</Link>}
+          {!isOwnProfile && me && (
+            <FollowButton
+              followUrl={`/api/users/${encodeURIComponent(profile.username)}/follow`}
+              initialFollowing={profile.isFollowedByMe}
+            />
+          )}
         </div>
       </div>
 

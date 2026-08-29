@@ -1,6 +1,7 @@
 using GameDevsConnect.Api.Infrastructure.Persistence;
 using GameDevsConnect.Api.Modules.Projects.Domain;
 using GameDevsConnect.Api.Modules.Skills.Domain;
+using GameDevsConnect.Api.Modules.Social.Domain;
 using GameDevsConnect.Api.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +30,8 @@ public record UserProfileDto(
     IReadOnlyList<UserLinkDto> Links,
     IReadOnlyList<UserSkillDto> Skills,
     IReadOnlyList<UserProjectSummaryDto> Projects,
-    IReadOnlyList<UserContributionDto> Contributions);
+    IReadOnlyList<UserContributionDto> Contributions,
+    bool IsFollowedByMe);
 
 public record GetUserProfileQuery(string Username, Guid? RequestingUserId) : IRequest<Result<UserProfileDto>>;
 
@@ -70,7 +72,11 @@ public class GetUserProfileQueryHandler(AppDbContext db)
                 (x, q) => new UserContributionDto(x.c.Id, x.p.Slug, x.p.Title, q.Id, q.Title, x.c.CreatedAt))
             .ToListAsync(cancellationToken);
 
+        var isFollowedByMe = request.RequestingUserId is not null && await db.Follows.AnyAsync(
+            f => f.FollowerUserId == request.RequestingUserId && f.TargetType == FollowTargetType.User && f.TargetId == user.Id,
+            cancellationToken);
+
         return Result<UserProfileDto>.Success(
-            new UserProfileDto(user.Id, user.Username, user.AvatarUrl, user.Bio, links, skills, projects, contributions));
+            new UserProfileDto(user.Id, user.Username, user.AvatarUrl, user.Bio, links, skills, projects, contributions, isFollowedByMe));
     }
 }

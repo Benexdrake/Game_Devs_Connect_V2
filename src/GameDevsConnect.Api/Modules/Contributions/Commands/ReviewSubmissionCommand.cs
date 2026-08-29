@@ -3,6 +3,7 @@ using GameDevsConnect.Api.Modules.Contributions.Domain;
 using GameDevsConnect.Api.Modules.Projects;
 using GameDevsConnect.Api.Modules.Projects.Domain;
 using GameDevsConnect.Api.Modules.Quests.Domain;
+using GameDevsConnect.Api.Modules.Social.Events;
 using GameDevsConnect.Api.Modules.Xp.Commands;
 using GameDevsConnect.Api.Shared;
 using MediatR;
@@ -77,7 +78,7 @@ public class ReviewSubmissionCommandHandler(AppDbContext db, IMediator mediator)
                 submission.Status = SubmissionStatus.Accepted;
                 quest.Status = QuestStatus.Accepted;
 
-                db.Contributions.Add(new Contribution
+                var contribution = new Contribution
                 {
                     Id = Guid.NewGuid(),
                     UserId = submission.UserId,
@@ -85,15 +86,24 @@ public class ReviewSubmissionCommandHandler(AppDbContext db, IMediator mediator)
                     QuestId = quest.Id,
                     SubmissionId = submission.Id,
                     CreatedAt = now,
-                });
+                };
+                db.Contributions.Add(contribution);
 
                 await mediator.Send(
                     new AwardXpCommand(submission.UserId, quest.Difficulty, quest.XpReward, "Quest", quest.Id),
+                    cancellationToken);
+
+                await mediator.Publish(
+                    new ContributionAcceptedEvent(contribution.Id, project.Id, quest.Id, submission.UserId, quest.Title),
                     cancellationToken);
                 break;
         }
 
         await db.SaveChangesAsync(cancellationToken);
+
+        await mediator.Publish(
+            new SubmissionReviewedEvent(submission.Id, submission.UserId, quest.Id, quest.Title, request.Decision.ToString()),
+            cancellationToken);
 
         return Result<SubmissionDto>.Success(await SubmissionDtoBuilder.BuildAsync(db, submission, cancellationToken));
     }
