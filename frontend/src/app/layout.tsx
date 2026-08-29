@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NotificationBell } from "./NotificationBell";
+import { SearchBar } from "./SearchBar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,6 +28,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Link href="/" style={{ fontWeight: 600, textDecoration: "none" }}>
             ← Gamedevs Connect
           </Link>
+          <Link href="/discover" style={{ marginLeft: "1rem" }}>
+            Discover
+          </Link>
+          <SearchBar />
           <NotificationBell />
         </header>
         {children}

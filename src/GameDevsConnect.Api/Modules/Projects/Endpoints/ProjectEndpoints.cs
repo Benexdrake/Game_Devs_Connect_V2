@@ -36,6 +36,12 @@ public static class ProjectEndpoints
             return result.ToHttpResult();
         }).RequireAuthorization();
 
+        group.MapGet("/discover", async (string? sort, int? page, int? pageSize, IMediator mediator, CancellationToken ct) =>
+        {
+            var result = await mediator.Send(new DiscoverProjectsQuery(sort ?? "recent", page ?? 1, pageSize ?? 20), ct);
+            return result.ToHttpResult();
+        });
+
         group.MapGet("/{slug}", async (string slug, IMediator mediator, HttpContext http, CancellationToken ct) =>
         {
             var userId = http.User.Identity?.IsAuthenticated == true ? http.GetUserId() : (Guid?)null;

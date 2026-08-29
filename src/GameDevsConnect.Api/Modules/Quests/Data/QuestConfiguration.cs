@@ -3,6 +3,7 @@ using GameDevsConnect.Api.Modules.Quests.Domain;
 using GameDevsConnect.Api.Modules.Users.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NpgsqlTypes;
 
 namespace GameDevsConnect.Api.Modules.Quests.Data;
 
@@ -20,5 +21,9 @@ public class QuestConfiguration : IEntityTypeConfiguration<Quest>
 
         builder.HasOne<Project>().WithMany().HasForeignKey(q => q.ProjectId).OnDelete(DeleteBehavior.Cascade);
         builder.HasOne<User>().WithMany().HasForeignKey(q => q.CreatorId).OnDelete(DeleteBehavior.Cascade);
+
+        builder.Property<NpgsqlTsVector>("SearchVector")
+            .IsGeneratedTsVectorColumn("english", [nameof(Quest.Title), nameof(Quest.Description)]);
+        builder.HasIndex("SearchVector").HasMethod("GIN");
     }
 }

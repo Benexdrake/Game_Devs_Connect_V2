@@ -188,3 +188,30 @@ export type Notification = {
 };
 
 export type NotificationsResult = { items: Notification[]; unreadCount: number };
+
+export type DiscoverSort = "trending" | "recent" | "new" | "looking-for-contributors";
+
+export type SearchProjectResult = {
+  slug: string;
+  title: string;
+  logoUrl: string | null;
+  engine: string | null;
+  genre: string | null;
+};
+
+export type SearchQuestResult = {
+  id: string;
+  title: string;
+  projectSlug: string;
+  projectTitle: string;
+  difficulty: QuestDifficulty;
+  xpReward: number;
+};
+
+export type SearchUserResult = { username: string; avatarUrl: string | null };
+
+export type SearchResults = {
+  projects: SearchProjectResult[];
+  quests: SearchQuestResult[];
+  users: SearchUserResult[];
+};

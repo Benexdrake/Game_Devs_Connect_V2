@@ -5,6 +5,7 @@ using GameDevsConnect.Api.Modules.Contributions.Endpoints;
 using GameDevsConnect.Api.Modules.Notifications.Endpoints;
 using GameDevsConnect.Api.Modules.Projects.Endpoints;
 using GameDevsConnect.Api.Modules.Quests.Endpoints;
+using GameDevsConnect.Api.Modules.Search.Endpoints;
 using GameDevsConnect.Api.Modules.Skills.Endpoints;
 using GameDevsConnect.Api.Modules.Social.Endpoints;
 using GameDevsConnect.Api.Modules.Users.Endpoints;
@@ -89,5 +90,6 @@ app.MapContributionEndpoints();
 app.MapXpEndpoints();
 app.MapSocialEndpoints();
 app.MapNotificationEndpoints();
+app.MapSearchEndpoints();
 
 app.Run();

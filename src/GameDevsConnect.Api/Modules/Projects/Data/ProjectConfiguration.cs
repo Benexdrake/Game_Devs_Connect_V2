@@ -1,6 +1,7 @@
 using GameDevsConnect.Api.Modules.Projects.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NpgsqlTypes;
 
 namespace GameDevsConnect.Api.Modules.Projects.Data;
 
@@ -16,5 +17,9 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(p => p.Title).IsRequired();
         builder.Property(p => p.Status).HasConversion<string>().IsRequired();
         builder.Property(p => p.Visibility).HasConversion<string>().IsRequired();
+
+        builder.Property<NpgsqlTsVector>("SearchVector")
+            .IsGeneratedTsVectorColumn("english", [nameof(Project.Title), nameof(Project.Description)]);
+        builder.HasIndex("SearchVector").HasMethod("GIN");
     }
 }
