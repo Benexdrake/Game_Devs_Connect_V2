@@ -1,4 +1,5 @@
 using GameDevsConnect.Api.Modules.Projects.Domain;
+using GameDevsConnect.Api.Modules.Quests.Domain;
 using GameDevsConnect.Api.Modules.Skills.Domain;
 using GameDevsConnect.Api.Modules.Users.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
     public DbSet<Tag> Tags => Set<Tag>();
     public DbSet<ProjectTag> ProjectTags => Set<ProjectTag>();
+    public DbSet<Quest> Quests => Set<Quest>();
+    public DbSet<QuestSkill> QuestSkills => Set<QuestSkill>();
+    public DbSet<QuestAssignment> QuestAssignments => Set<QuestAssignment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

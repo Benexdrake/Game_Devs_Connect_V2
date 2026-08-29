@@ -57,3 +57,37 @@ export type Project = {
 };
 
 export type CurrentUser = { id: string; username: string; avatarUrl: string | null };
+
+export type QuestDifficulty = "Easy" | "Medium" | "Hard";
+
+export type QuestStatus =
+  | "Open"
+  | "Claimed"
+  | "InProgress"
+  | "Submitted"
+  | "InReview"
+  | "ChangesRequested"
+  | "Accepted"
+  | "Rejected"
+  | "Cancelled";
+
+export type QuestSkill = { id: string; name: string; category: SkillCategory };
+
+export type Quest = {
+  id: string;
+  projectId: string;
+  projectSlug: string;
+  projectTitle: string;
+  creatorId: string;
+  creatorUsername: string;
+  title: string;
+  description: string | null;
+  category: SkillCategory;
+  difficulty: QuestDifficulty;
+  xpReward: number;
+  status: QuestStatus;
+  deadline: string | null;
+  maxContributors: number;
+  requiredSkills: QuestSkill[];
+  createdAt: string;
+};

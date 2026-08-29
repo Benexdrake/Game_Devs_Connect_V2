@@ -2,6 +2,7 @@ using GameDevsConnect.Api.Infrastructure.Persistence;
 using GameDevsConnect.Api.Modules.Auth.Endpoints;
 using GameDevsConnect.Api.Modules.Auth.GitHub;
 using GameDevsConnect.Api.Modules.Projects.Endpoints;
+using GameDevsConnect.Api.Modules.Quests.Endpoints;
 using GameDevsConnect.Api.Modules.Skills.Endpoints;
 using GameDevsConnect.Api.Modules.Users.Endpoints;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -72,5 +73,6 @@ app.MapAuthEndpoints();
 app.MapUserEndpoints();
 app.MapSkillEndpoints();
 app.MapProjectEndpoints();
+app.MapQuestEndpoints();
 
 app.Run();

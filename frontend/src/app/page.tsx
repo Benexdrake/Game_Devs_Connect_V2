@@ -58,6 +58,7 @@ export default function Home() {
               <Link href={`/users/${user.username}`}>Mein Profil</Link>
               <Link href="/settings/profile">Profil bearbeiten</Link>
               <Link href="/projects/new">Neues Projekt</Link>
+              <Link href="/quests">Quests entdecken</Link>
             </nav>
             <button onClick={handleLogout}>Logout</button>
           </div>

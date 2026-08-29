@@ -1,5 +1,9 @@
 # Gamedevs Connect – MVP / Product Roadmap
 
+> © 2026 Benjamin Richter. All rights reserved — see [LICENSE](LICENSE). This
+> repository is public for portfolio/transparency purposes; it is not
+> licensed for reuse.
+
 ## 1. Vision
 
 Gamedevs Connect soll eine Plattform sein, auf der Game Developer gemeinsam Spiele

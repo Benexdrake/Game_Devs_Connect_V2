@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { CurrentUser, Project, ProjectRole } from "@/lib/types";
+import type { CurrentUser, Project, ProjectRole, Quest } from "@/lib/types";
 
 type Tab = "overview" | "team" | "quests" | "activity";
 
-export function ProjectView({ project, me }: { project: Project; me: CurrentUser | null }) {
+export function ProjectView({ project, me, quests }: { project: Project; me: CurrentUser | null; quests: Quest[] }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("overview");
   const [inviteUsername, setInviteUsername] = useState("");
@@ -71,6 +71,22 @@ export function ProjectView({ project, me }: { project: Project; me: CurrentUser
         credentials: "include",
       });
       if (!res.ok) setError("Entfernen fehlgeschlagen.");
+      refresh();
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleCancelQuest(questId: string) {
+    if (!confirm("Quest wirklich abbrechen?")) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/projects/${project.slug}/quests/${questId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) setError("Abbrechen fehlgeschlagen.");
       refresh();
     } finally {
       setBusy(false);
@@ -152,7 +168,47 @@ export function ProjectView({ project, me }: { project: Project; me: CurrentUser
         </section>
       )}
 
-      {tab === "quests" && <p>Quests kommen in Phase 2.</p>}
+      {tab === "quests" && (
+        <section>
+          {canManage && (
+            <p>
+              <Link href={`/projects/${project.slug}/quests/new`}>+ Neue Quest</Link>
+            </p>
+          )}
+          {quests.length === 0 ? (
+            <p>Noch keine Quests.</p>
+          ) : (
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {quests.map((quest) => (
+                <li key={quest.id} style={{ border: "1px solid #ccc", borderRadius: 8, padding: "0.75rem", marginBottom: "0.5rem" }}>
+                  <Link href={`/quests/${quest.id}`} style={{ fontWeight: 600 }}>{quest.title}</Link>
+                  {" — "}
+                  {quest.status} · {quest.difficulty} · {quest.xpReward} XP
+                  {canManage && (
+                    <>
+                      {quest.status === "Open" && (
+                        <Link href={`/quests/${quest.id}/edit`} style={{ marginLeft: "0.5rem" }}>
+                          Bearbeiten
+                        </Link>
+                      )}
+                      {quest.status !== "Cancelled" && (
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() => handleCancelQuest(quest.id)}
+                          style={{ marginLeft: "0.5rem" }}
+                        >
+                          Abbrechen
+                        </button>
+                      )}
+                    </>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
       {tab === "activity" && <p>Activity kommt in Phase 5.</p>}
     </main>
   );
