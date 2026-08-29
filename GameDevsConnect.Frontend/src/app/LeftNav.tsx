@@ -4,38 +4,56 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
-import { Bell, Compass, Home, Swords, User } from "lucide-react";
-import type { CurrentUser } from "@/lib/types";
+import { Bell, Compass, Home, Search, Swords, User } from "lucide-react";
+import type { CurrentUser, NotificationsResult } from "@/lib/types";
 
-const BASE_ITEMS = [
-  { href: "/", icon: Home, label: "Home" },
-  { href: "/discover", icon: Compass, label: "Discover" },
-  { href: "/quests", icon: Swords, label: "Quests" },
-  { href: "/notifications", icon: Bell, label: "Notifications" },
-];
+const POLL_INTERVAL_MS = 30000;
 
 export function LeftNav() {
   const pathname = usePathname();
   const [me, setMe] = useState<CurrentUser | null>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/auth/me", { credentials: "include" })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((json) => {
-        if (!cancelled) setMe(json);
-      })
-      .catch(() => {
-        if (!cancelled) setMe(null);
-      });
+
+    async function poll() {
+      try {
+        const meRes = await fetch("/api/auth/me", { credentials: "include" });
+        if (!meRes.ok) {
+          if (!cancelled) setMe(null);
+          return;
+        }
+        const meJson: CurrentUser = await meRes.json();
+        if (cancelled) return;
+        setMe(meJson);
+
+        const notifRes = await fetch("/api/notifications?pageSize=1", { credentials: "include" });
+        if (notifRes.ok && !cancelled) {
+          const data: NotificationsResult = await notifRes.json();
+          setUnreadCount(data.unreadCount);
+        }
+      } catch {
+        // Ignore - next poll tick will retry.
+      }
+    }
+
+    poll();
+    const interval = setInterval(poll, POLL_INTERVAL_MS);
     return () => {
       cancelled = true;
+      clearInterval(interval);
     };
   }, []);
 
-  const items = me
-    ? [...BASE_ITEMS, { href: `/users/${me.username}`, icon: User, label: "Profil" }]
-    : BASE_ITEMS;
+  const items = [
+    { href: "/", icon: Home, label: "Home", badge: 0 },
+    { href: "/notifications", icon: Bell, label: "Notifications", badge: unreadCount },
+    { href: "/discover", icon: Compass, label: "Discover", badge: 0 },
+    { href: "/quests", icon: Swords, label: "Quests", badge: 0 },
+    { href: "/search", icon: Search, label: "Suche", badge: 0 },
+    ...(me ? [{ href: `/users/${me.username}`, icon: User, label: "Profil", badge: 0 }] : []),
+  ];
 
   return (
     <nav
@@ -58,13 +76,18 @@ export function LeftNav() {
             href={item.href}
             title={item.label}
             className={clsx(
-              "flex h-12 w-12 items-center justify-center rounded-md border-2 transition-colors",
+              "relative flex h-12 w-12 items-center justify-center rounded-md border-2 transition-colors",
               active
                 ? "border-accent-bright bg-accent/20 text-accent-bright"
                 : "border-border text-text-muted hover:border-accent hover:text-accent-bright",
             )}
           >
             <Icon size={22} />
+            {item.badge > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-medium text-text">
+                {item.badge > 9 ? "9+" : item.badge}
+              </span>
+            )}
           </Link>
         );
       })}
