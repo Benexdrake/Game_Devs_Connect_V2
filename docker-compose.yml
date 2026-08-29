@@ -49,6 +49,9 @@ services:
       # at request time - needs to be set here too, or it falls back to the
       # localhost default and every SSR data fetch fails inside the container.
       BACKEND_URL: http://api:8080
+      IMPRESSUM_NAME: ${IMPRESSUM_NAME}
+      IMPRESSUM_ADDRESS: ${IMPRESSUM_ADDRESS}
+      IMPRESSUM_EMAIL: ${IMPRESSUM_EMAIL}
     ports:
       - "3000:3000"
     depends_on:
