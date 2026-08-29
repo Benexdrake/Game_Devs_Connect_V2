@@ -1,40 +1,49 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import type { ActivityEvent, CurrentUser } from "@/lib/types";
-import { Button, PageContainer, Panel } from "@/components/ui";
+import { useState } from "react";
+import clsx from "clsx";
+import type { ActivityEvent } from "@/lib/types";
+import { PageContainer, Panel } from "@/components/ui";
 
-export function HomeFeed({ me, feed }: { me: CurrentUser; feed: ActivityEvent[] }) {
-  const router = useRouter();
+type Tab = "forYou" | "following";
 
-  async function handleLogout() {
-    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
-    router.push("/");
-    router.refresh();
-  }
+const TABS: { id: Tab; label: string }[] = [
+  { id: "forYou", label: "Für dich" },
+  { id: "following", label: "Folge ich" },
+];
+
+const EMPTY_STATE: Record<Tab, string> = {
+  forYou: "Noch nichts zu sehen. Wähle Skills in deinem Profil aus, damit wir passende Quests und Updates finden.",
+  following: "Noch nichts zu sehen. Folge Usern oder Projekten, um ihre neuen Quests und angenommenen Contributions hier zu sehen.",
+};
+
+export function HomeFeed({ forYou, following }: { forYou: ActivityEvent[]; following: ActivityEvent[] }) {
+  const [tab, setTab] = useState<Tab>("forYou");
+  const feed = tab === "forYou" ? forYou : following;
 
   return (
     <PageContainer>
-      <div className="mb-6 flex items-center gap-3">
-        {me.avatarUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={me.avatarUrl} alt={me.username} width={40} height={40} className="rounded-full" />
-        )}
-        <p className="m-0">
-          Angemeldet als <span className="font-medium text-accent-bright">{me.username}</span>
-        </p>
-        <Button type="button" variant="ghost" onClick={handleLogout} className="ml-auto">
-          Logout
-        </Button>
-      </div>
+      <nav className="mb-4 flex gap-1 border-b border-border">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => setTab(t.id)}
+            className={clsx(
+              "border-b-2 px-3 py-2 text-sm transition-colors",
+              tab === t.id
+                ? "border-accent-bright text-accent-bright"
+                : "border-transparent text-text-muted hover:text-text",
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
+      </nav>
 
-      <h2 className="mb-3 font-display text-xs text-accent-bright">DEIN FEED</h2>
       {feed.length === 0 ? (
-        <Panel className="text-text-muted">
-          Noch nichts zu sehen. Folge Usern oder Projekten, um ihre neuen Quests und angenommenen Contributions hier
-          zu sehen.
-        </Panel>
+        <Panel className="text-text-muted">{EMPTY_STATE[tab]}</Panel>
       ) : (
         <ul className="list-none space-y-2 p-0">
           {feed.map((event) => (

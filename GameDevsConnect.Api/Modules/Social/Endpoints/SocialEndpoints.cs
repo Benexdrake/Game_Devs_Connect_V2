@@ -45,6 +45,12 @@ public static class SocialEndpoints
             return result.ToHttpResult();
         }).RequireAuthorization();
 
+        app.MapGet("/api/feed/for-you", async (int? page, int? pageSize, IMediator mediator, HttpContext http, CancellationToken ct) =>
+        {
+            var result = await mediator.Send(new GetForYouFeedQuery(http.GetUserId(), page ?? 1, pageSize ?? 20), ct);
+            return result.ToHttpResult();
+        }).RequireAuthorization();
+
         app.MapGet("/api/projects/{slug}/activity", async (string slug, int? page, int? pageSize, IMediator mediator, HttpContext http, CancellationToken ct) =>
         {
             var userId = http.User.Identity?.IsAuthenticated == true ? http.GetUserId() : (Guid?)null;

@@ -18,6 +18,7 @@ public class QuestCreatedActivityHandler(AppDbContext db) : INotificationHandler
         {
             Id = Guid.NewGuid(),
             ProjectId = notification.ProjectId,
+            QuestId = notification.QuestId,
             ActorUserId = notification.ActorUserId,
             Type = ActivityEventType.QuestCreated,
             Payload = JsonSerializer.Serialize(new { questId = notification.QuestId, questTitle = notification.QuestTitle }),
@@ -35,6 +36,7 @@ public class ContributionAcceptedActivityHandler(AppDbContext db) : INotificatio
         {
             Id = Guid.NewGuid(),
             ProjectId = notification.ProjectId,
+            QuestId = notification.QuestId,
             ActorUserId = notification.ContributorUserId,
             Type = ActivityEventType.ContributionAccepted,
             Payload = JsonSerializer.Serialize(new { questId = notification.QuestId, questTitle = notification.QuestTitle }),

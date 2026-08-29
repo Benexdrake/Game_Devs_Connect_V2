@@ -1,4 +1,5 @@
 using GameDevsConnect.Api.Modules.Projects.Domain;
+using GameDevsConnect.Api.Modules.Quests.Domain;
 using GameDevsConnect.Api.Modules.Social.Domain;
 using GameDevsConnect.Api.Modules.Users.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +18,11 @@ public class ActivityEventConfiguration : IEntityTypeConfiguration<ActivityEvent
         builder.Property(e => e.Payload).HasColumnType("jsonb");
         builder.HasIndex(e => e.CreatedAt);
         builder.HasIndex(e => e.ProjectId);
+        builder.HasIndex(e => e.QuestId);
+        builder.HasIndex(e => e.ActorUserId);
 
         builder.HasOne<Project>().WithMany().HasForeignKey(e => e.ProjectId).OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne<Quest>().WithMany().HasForeignKey(e => e.QuestId).OnDelete(DeleteBehavior.SetNull);
         builder.HasOne<User>().WithMany().HasForeignKey(e => e.ActorUserId).OnDelete(DeleteBehavior.Cascade);
     }
 }

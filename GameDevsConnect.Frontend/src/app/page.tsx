@@ -10,7 +10,10 @@ export default async function Home() {
     redirect("/login");
   }
 
-  const feed = (await apiFetchJson<ActivityEvent[]>("/api/feed")) ?? [];
+  const [forYou, following] = await Promise.all([
+    apiFetchJson<ActivityEvent[]>("/api/feed/for-you"),
+    apiFetchJson<ActivityEvent[]>("/api/feed"),
+  ]);
 
-  return <HomeFeed me={me} feed={feed} />;
+  return <HomeFeed forYou={forYou ?? []} following={following ?? []} />;
 }
