@@ -92,6 +92,7 @@ export type Quest = {
   deadline: string | null;
   maxContributors: number;
   claimedByUserId: string | null;
+  claimedByUsername: string | null;
   requiredSkills: QuestSkill[];
   createdAt: string;
 };

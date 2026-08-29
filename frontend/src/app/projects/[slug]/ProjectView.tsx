@@ -272,6 +272,7 @@ export function ProjectView({
                   <Link href={`/quests/${quest.id}`} style={{ fontWeight: 600 }}>{quest.title}</Link>
                   {" — "}
                   {quest.status} · {quest.difficulty} · {quest.xpReward} XP
+                  {quest.claimedByUsername && ` · claimed von ${quest.claimedByUsername}`}
                   {canManage && (
                     <>
                       {quest.status === "Open" && (

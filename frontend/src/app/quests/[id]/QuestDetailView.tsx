@@ -169,6 +169,12 @@ export function QuestDetailView({
       <p>
         Erstellt von <Link href={`/users/${quest.creatorUsername}`}>{quest.creatorUsername}</Link>
       </p>
+      {quest.claimedByUsername && !isActiveClaimer && (
+        <p>
+          Wird aktuell bearbeitet von{" "}
+          <Link href={`/users/${quest.claimedByUsername}`}>{quest.claimedByUsername}</Link>
+        </p>
+      )}
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
@@ -250,9 +256,10 @@ export function QuestDetailView({
         </section>
       )}
 
-      {submissions.length > 0 && (
+      {(canManage || isActiveClaimer || submissions.length > 0) && (
         <section style={{ marginTop: "2rem", borderTop: "1px solid #ccc", paddingTop: "1rem" }}>
           <h2>Submissions</h2>
+          {submissions.length === 0 && <p>Noch keine Submission eingereicht.</p>}
           <ul style={{ listStyle: "none", padding: 0 }}>
             {submissions.map((submission) => (
               <li

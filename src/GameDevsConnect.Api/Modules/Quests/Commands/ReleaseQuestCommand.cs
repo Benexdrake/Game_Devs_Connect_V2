@@ -27,11 +27,16 @@ public class ReleaseQuestCommandHandler(AppDbContext db) : IRequestHandler<Relea
         }
 
         var now = DateTimeOffset.UtcNow;
-        assignment.ReleasedAt = now;
 
-        var remainingActive = await db.QuestAssignments
-            .CountAsync(a => a.QuestId == quest.Id && a.ReleasedAt == null, cancellationToken);
-        if (remainingActive == 0)
+        // Count active assignments *other* than the one being released here -
+        // querying by ReleasedAt == null instead would still count this one,
+        // since its ReleasedAt update below isn't visible to a fresh SQL
+        // query until SaveChanges runs.
+        var otherActiveAssignments = await db.QuestAssignments
+            .CountAsync(a => a.QuestId == quest.Id && a.Id != assignment.Id && a.ReleasedAt == null, cancellationToken);
+
+        assignment.ReleasedAt = now;
+        if (otherActiveAssignments == 0)
         {
             quest.Status = QuestStatus.Open;
         }

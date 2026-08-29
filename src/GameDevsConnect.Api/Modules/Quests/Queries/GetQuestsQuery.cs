@@ -80,26 +80,32 @@ public class GetQuestsQueryHandler(AppDbContext db) : IRequestHandler<GetQuestsQ
 
         var activeClaimsByQuest = await db.QuestAssignments
             .Where(a => questIds.Contains(a.QuestId) && a.ReleasedAt == null)
-            .ToDictionaryAsync(a => a.QuestId, a => (Guid?)a.UserId, cancellationToken);
+            .Join(db.Users, a => a.UserId, u => u.Id, (a, u) => new { a.QuestId, u.Id, u.Username })
+            .ToDictionaryAsync(x => x.QuestId, cancellationToken);
 
-        var dtos = rows.Select(r => new QuestDto(
-            r.Quest.Id,
-            r.Project.Id,
-            r.Project.Slug,
-            r.Project.Title,
-            r.Creator.Id,
-            r.Creator.Username,
-            r.Quest.Title,
-            r.Quest.Description,
-            r.Quest.Category,
-            r.Quest.Difficulty,
-            r.Quest.XpReward,
-            r.Quest.Status,
-            r.Quest.Deadline,
-            r.Quest.MaxContributors,
-            activeClaimsByQuest.GetValueOrDefault(r.Quest.Id),
-            skillsByQuest.Where(s => s.QuestId == r.Quest.Id).Select(s => s.Skill).ToList(),
-            r.Quest.CreatedAt)).ToList();
+        var dtos = rows.Select(r =>
+        {
+            var claimer = activeClaimsByQuest.GetValueOrDefault(r.Quest.Id);
+            return new QuestDto(
+                r.Quest.Id,
+                r.Project.Id,
+                r.Project.Slug,
+                r.Project.Title,
+                r.Creator.Id,
+                r.Creator.Username,
+                r.Quest.Title,
+                r.Quest.Description,
+                r.Quest.Category,
+                r.Quest.Difficulty,
+                r.Quest.XpReward,
+                r.Quest.Status,
+                r.Quest.Deadline,
+                r.Quest.MaxContributors,
+                claimer?.Id,
+                claimer?.Username,
+                skillsByQuest.Where(s => s.QuestId == r.Quest.Id).Select(s => s.Skill).ToList(),
+                r.Quest.CreatedAt);
+        }).ToList();
 
         return Result<IReadOnlyList<QuestDto>>.Success(dtos);
     }
