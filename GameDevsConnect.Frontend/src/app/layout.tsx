@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Geist, Geist_Mono, Press_Start_2P } from "next/font/google";
+import { LoginLink } from "./LoginLink";
 import { NotificationBell } from "./NotificationBell";
 import { SearchBar } from "./SearchBar";
 import "./globals.css";
@@ -44,6 +45,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             Discover
           </Link>
           <SearchBar />
+          <span className="ml-auto">
+            <LoginLink />
+          </span>
           <NotificationBell />
         </header>
         {children}
