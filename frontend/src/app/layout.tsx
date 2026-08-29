@@ -38,7 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             href="/"
             className="font-display text-[10px] text-accent-bright transition-colors hover:text-accent sm:text-xs"
           >
-            ⚔ GAMEDEVS CONNECT
+            GAMEDEVS CONNECT
           </Link>
           <Link href="/discover" className="text-sm text-text-muted transition-colors hover:text-text">
             Discover
