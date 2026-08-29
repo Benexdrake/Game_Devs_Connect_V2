@@ -55,6 +55,9 @@ export function QuestDetailView({
   }
 
   async function handleRelease() {
+    if (!confirm("Claim aufgeben? Die Quest wird wieder für alle offen und du kannst danach nichts mehr einreichen, bis du sie erneut claimst.")) {
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
@@ -179,14 +182,12 @@ export function QuestDetailView({
           Bearbeiten
         </Link>
       )}
-      {canRelease && (
-        <button type="button" disabled={busy} onClick={handleRelease} style={{ marginLeft: "0.5rem" }}>
-          Freigeben
-        </button>
-      )}
 
       {canSubmit && (
         <section style={{ marginTop: "2rem", borderTop: "1px solid #ccc", paddingTop: "1rem" }}>
+          <p style={{ background: "#f0f6ff", padding: "0.5rem 0.75rem", borderRadius: 6 }}>
+            ✓ Du hast diese Quest geclaimt. Reiche unten deine Submission ein, sobald du fertig bist.
+          </p>
           <h2>Submission einreichen</h2>
           <form onSubmit={handleSubmitSubmission}>
             <label htmlFor="submission-description">Beschreibung</label>
@@ -238,6 +239,14 @@ export function QuestDetailView({
               {busy ? "Sende..." : "Einreichen"}
             </button>
           </form>
+
+          {canRelease && (
+            <p style={{ marginTop: "1rem" }}>
+              <button type="button" disabled={busy} onClick={handleRelease} style={{ color: "#888" }}>
+                Claim aufgeben
+              </button>
+            </p>
+          )}
         </section>
       )}
 
