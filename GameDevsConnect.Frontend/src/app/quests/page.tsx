@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { apiFetchJson } from "@/lib/api";
-import type { Quest, Skill } from "@/lib/types";
+import { SKILL_CATEGORY_LABELS, type Engine, type Quest, type Skill, type SkillCategory } from "@/lib/types";
 import { Badge, Button, Input, PageContainer, Panel, Select } from "@/components/ui";
 
 type SearchParams = {
@@ -10,10 +10,10 @@ type SearchParams = {
   projectSlug?: string;
   difficulty?: string;
   minXp?: string;
-  engine?: string;
+  engineId?: string;
 };
 
-const CATEGORIES = ["Programming", "Art2D", "Art3D", "Animation", "Audio", "Design", "Writing", "Other"];
+const CATEGORIES: SkillCategory[] = ["Programming", "Engines", "Art2D", "Art3D", "Animation", "Audio", "Design", "Writing", "Production", "Other"];
 const DIFFICULTIES = ["Easy", "Medium", "Hard"];
 
 export default async function QuestsPage({
@@ -27,9 +27,10 @@ export default async function QuestsPage({
     if (value) query.set(key, value);
   }
 
-  const [quests, skills] = await Promise.all([
+  const [quests, skills, engines] = await Promise.all([
     apiFetchJson<Quest[]>(`/api/quests?${query.toString()}`),
     apiFetchJson<Skill[]>("/api/skills"),
+    apiFetchJson<Engine[]>("/api/engines"),
   ]);
 
   return (
@@ -41,7 +42,7 @@ export default async function QuestsPage({
         <Select name="category" defaultValue={params.category ?? ""} className="w-auto">
           <option value="">Alle Kategorien</option>
           {CATEGORIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
+            <option key={c} value={c}>{SKILL_CATEGORY_LABELS[c]}</option>
           ))}
         </Select>
         <Select name="skillId" defaultValue={params.skillId ?? ""} className="w-auto">
@@ -57,7 +58,12 @@ export default async function QuestsPage({
           ))}
         </Select>
         <Input name="projectSlug" placeholder="Projekt-Slug" defaultValue={params.projectSlug ?? ""} className="w-32" />
-        <Input name="engine" placeholder="Engine" defaultValue={params.engine ?? ""} className="w-28" />
+        <Select name="engineId" defaultValue={params.engineId ?? ""} className="w-auto">
+          <option value="">Alle Engines</option>
+          {(engines ?? []).map((e) => (
+            <option key={e.id} value={e.id}>{e.name}</option>
+          ))}
+        </Select>
         <Input name="minXp" type="number" placeholder="Min. XP" defaultValue={params.minXp ?? ""} className="w-24" />
         <Button type="submit">Filtern</Button>
       </form>
@@ -74,7 +80,7 @@ export default async function QuestsPage({
                 </Link>
                 <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-text-muted">
                   <span>{quest.projectTitle}</span>
-                  <Badge>{quest.category}</Badge>
+                  <Badge>{SKILL_CATEGORY_LABELS[quest.category]}</Badge>
                   <Badge tone="accent">{quest.difficulty}</Badge>
                   <Badge tone="warning">{quest.xpReward} XP</Badge>
                 </div>

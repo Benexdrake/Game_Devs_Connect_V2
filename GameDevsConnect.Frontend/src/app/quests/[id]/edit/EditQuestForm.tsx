@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { Quest, QuestDifficulty, Skill, SkillCategory } from "@/lib/types";
-import { Button, Input, PageContainer, Select, Textarea } from "@/components/ui";
+import { SKILL_CATEGORY_LABELS, type Quest, type QuestDifficulty, type Skill, type SkillCategory } from "@/lib/types";
+import { BackLink, Button, Input, PageContainer, Select, Textarea } from "@/components/ui";
 
-const CATEGORIES = ["Programming", "Art2D", "Art3D", "Animation", "Audio", "Design", "Writing", "Other"];
+const CATEGORIES: SkillCategory[] = ["Programming", "Engines", "Art2D", "Art3D", "Animation", "Audio", "Design", "Writing", "Production", "Other"];
 const DIFFICULTIES = ["Easy", "Medium", "Hard"] as const;
 
 // Mirrors QuestDifficultyXp.For on the backend - the server computes the
@@ -75,7 +75,10 @@ export function EditQuestForm({ quest, skills }: { quest: Quest; skills: Skill[]
 
   return (
     <PageContainer width="md">
-      <h1 className="mb-6 font-display text-sm text-accent-bright">QUEST BEARBEITEN</h1>
+      <div className="mb-6 flex items-center gap-2">
+        <BackLink fallbackHref={`/quests/${quest.id}`} />
+        <h1 className="font-display text-sm text-accent-bright">QUEST BEARBEITEN</h1>
+      </div>
       <form onSubmit={handleSubmit}>
         <label htmlFor="title" className="mb-1 block text-sm text-text-muted">Titel</label>
         <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required className="mb-4" />
@@ -92,7 +95,7 @@ export function EditQuestForm({ quest, skills }: { quest: Quest; skills: Skill[]
         <label htmlFor="category" className="mb-1 block text-sm text-text-muted">Kategorie</label>
         <Select id="category" value={category} onChange={(e) => setCategory(e.target.value as SkillCategory)} className="mb-4">
           {CATEGORIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
+            <option key={c} value={c}>{SKILL_CATEGORY_LABELS[c]}</option>
           ))}
         </Select>
 

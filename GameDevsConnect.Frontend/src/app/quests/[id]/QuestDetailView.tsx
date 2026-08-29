@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { CurrentUser, ProjectRole, Quest, Submission, SubmissionDecision } from "@/lib/types";
+import { SKILL_CATEGORY_LABELS, type CurrentUser, type ProjectRole, type Quest, type Submission, type SubmissionDecision } from "@/lib/types";
 import { Badge, Button, Input, PageContainer, Panel, Textarea } from "@/components/ui";
 
 type LinkInput = { url: string; label: string };
@@ -162,7 +162,7 @@ export function QuestDetailView({
       </p>
       <h1 className="mb-3 font-display text-base text-accent-bright">{quest.title}</h1>
       <div className="mb-3 flex flex-wrap items-center gap-2">
-        <Badge>{quest.category}</Badge>
+        <Badge>{SKILL_CATEGORY_LABELS[quest.category]}</Badge>
         <Badge tone="accent">{quest.difficulty}</Badge>
         <Badge tone="warning">{quest.xpReward} XP</Badge>
         <Badge tone={quest.status === "Open" ? "success" : "neutral"}>{quest.status}</Badge>
