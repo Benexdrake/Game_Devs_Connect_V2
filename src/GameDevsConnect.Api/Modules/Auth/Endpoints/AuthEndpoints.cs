@@ -2,6 +2,7 @@ using System.Security.Claims;
 using GameDevsConnect.Api.Modules.Auth.Commands;
 using GameDevsConnect.Api.Modules.Auth.Queries;
 using GameDevsConnect.Api.Shared.Endpoints;
+using GameDevsConnect.Api.Shared.Http;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -67,8 +68,7 @@ public static class AuthEndpoints
 
         group.MapGet("/me", async (IMediator mediator, HttpContext http, CancellationToken ct) =>
         {
-            var userId = Guid.Parse(http.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await mediator.Send(new GetCurrentUserQuery(userId), ct);
+            var result = await mediator.Send(new GetCurrentUserQuery(http.GetUserId()), ct);
             return result.ToHttpResult();
         }).RequireAuthorization();
 

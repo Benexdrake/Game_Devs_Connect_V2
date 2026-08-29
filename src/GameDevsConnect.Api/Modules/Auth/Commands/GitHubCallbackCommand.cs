@@ -39,13 +39,15 @@ public class GitHubCallbackCommandHandler(GitHubOAuthClient gitHubClient, AppDbC
         if (user is null)
         {
             var username = await MakeUniqueUsernameAsync(gitHubUser.Login, cancellationToken);
+            var now = DateTimeOffset.UtcNow;
             user = new User
             {
                 Id = Guid.NewGuid(),
                 GitHubId = gitHubId,
                 Username = username,
                 AvatarUrl = gitHubUser.AvatarUrl,
-                CreatedAt = DateTimeOffset.UtcNow,
+                CreatedAt = now,
+                UpdatedAt = now,
             };
             db.Users.Add(user);
             await db.SaveChangesAsync(cancellationToken);
@@ -53,6 +55,7 @@ public class GitHubCallbackCommandHandler(GitHubOAuthClient gitHubClient, AppDbC
         else if (user.AvatarUrl != gitHubUser.AvatarUrl)
         {
             user.AvatarUrl = gitHubUser.AvatarUrl;
+            user.UpdatedAt = DateTimeOffset.UtcNow;
             await db.SaveChangesAsync(cancellationToken);
         }
 

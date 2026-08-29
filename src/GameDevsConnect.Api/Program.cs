@@ -1,10 +1,17 @@
 using GameDevsConnect.Api.Infrastructure.Persistence;
 using GameDevsConnect.Api.Modules.Auth.Endpoints;
 using GameDevsConnect.Api.Modules.Auth.GitHub;
+using GameDevsConnect.Api.Modules.Projects.Endpoints;
+using GameDevsConnect.Api.Modules.Skills.Endpoints;
+using GameDevsConnect.Api.Modules.Users.Endpoints;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
@@ -62,5 +69,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAuthEndpoints();
+app.MapUserEndpoints();
+app.MapSkillEndpoints();
+app.MapProjectEndpoints();
 
 app.Run();

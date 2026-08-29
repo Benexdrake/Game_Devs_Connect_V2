@@ -40,6 +40,12 @@ services:
       dockerfile: Dockerfile.web
       args:
         BACKEND_URL: http://api:8080
+    environment:
+      # Rewrites are baked into a manifest at build time (the build ARG above
+      # covers that), but Server Components read process.env.BACKEND_URL live
+      # at request time - needs to be set here too, or it falls back to the
+      # localhost default and every SSR data fetch fails inside the container.
+      BACKEND_URL: http://api:8080
     ports:
       - "3000:3000"
     depends_on:

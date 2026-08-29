@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import styles from "./page.module.css";
 
@@ -53,6 +54,11 @@ export default function Home() {
               />
             )}
             <p>Angemeldet als {user.username}</p>
+            <nav style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
+              <Link href={`/users/${user.username}`}>Mein Profil</Link>
+              <Link href="/settings/profile">Profil bearbeiten</Link>
+              <Link href="/projects/new">Neues Projekt</Link>
+            </nav>
             <button onClick={handleLogout}>Logout</button>
           </div>
         ) : (
