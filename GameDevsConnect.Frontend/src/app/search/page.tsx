@@ -35,7 +35,7 @@ export default async function SearchPage({
                     <Link href={`/projects/${p.slug}`} className="font-medium text-text hover:text-accent-bright">
                       {p.title}
                     </Link>
-                    <span className="text-text-muted"> — {p.genre} · {p.engine}</span>
+                    <span className="text-text-muted"> — {p.genreNames.join(", ") || "Kein Genre"} · {p.engineName ?? "Keine Engine"}</span>
                   </li>
                 ))}
               </ul>
