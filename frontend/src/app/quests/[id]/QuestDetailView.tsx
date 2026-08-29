@@ -191,7 +191,7 @@ export function QuestDetailView({
 
       {canSubmit && (
         <section style={{ marginTop: "2rem", borderTop: "1px solid #ccc", paddingTop: "1rem" }}>
-          <p style={{ background: "#f0f6ff", padding: "0.5rem 0.75rem", borderRadius: 6 }}>
+          <p style={{ background: "#f0f6ff", color: "#111", padding: "0.5rem 0.75rem", borderRadius: 6 }}>
             ✓ Du hast diese Quest geclaimt. Reiche unten deine Submission ein, sobald du fertig bist.
           </p>
           <h2>Submission einreichen</h2>

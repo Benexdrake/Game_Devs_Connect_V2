@@ -79,6 +79,7 @@ export function NotificationBell() {
             right: 0,
             top: "100%",
             background: "white",
+            color: "#111",
             border: "1px solid #ccc",
             borderRadius: 8,
             width: 320,

@@ -55,6 +55,7 @@ export default function NotificationsPage() {
                 padding: "0.75rem",
                 borderBottom: "1px solid #eee",
                 background: n.isRead ? "transparent" : "#f0f6ff",
+                color: n.isRead ? "inherit" : "#111",
                 cursor: n.isRead ? "default" : "pointer",
               }}
             >
