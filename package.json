@@ -1,0 +1,11 @@
+{
+  "name": "gamedevs-connect",
+  "private": true,
+  "scripts": {
+    "frontend": "BACKEND_URL=http://localhost:8080 npm run dev --prefix GameDevsConnect.Frontend",
+    "backend": "docker compose up -d db api",
+    "backend:down": "docker compose down",
+    "backend:logs": "docker compose logs -f api",
+    "dev": "npm run backend && npm run frontend"
+  }
+}
