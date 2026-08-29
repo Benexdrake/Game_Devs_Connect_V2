@@ -22,6 +22,7 @@ public record QuestDto(
     QuestStatus Status,
     DateTimeOffset? Deadline,
     int MaxContributors,
+    Guid? ClaimedByUserId,
     IReadOnlyList<QuestSkillDto> RequiredSkills,
     DateTimeOffset CreatedAt);
 
@@ -36,6 +37,11 @@ internal static class QuestDtoBuilder
             .Where(qs => qs.QuestId == quest.Id)
             .Join(db.Skills, qs => qs.SkillId, s => s.Id, (qs, s) => new QuestSkillDto(s.Id, s.Name, s.Category))
             .ToListAsync(ct);
+
+        var claimedByUserId = await db.QuestAssignments
+            .Where(a => a.QuestId == quest.Id && a.ReleasedAt == null)
+            .Select(a => (Guid?)a.UserId)
+            .FirstOrDefaultAsync(ct);
 
         return new QuestDto(
             quest.Id,
@@ -52,6 +58,7 @@ internal static class QuestDtoBuilder
             quest.Status,
             quest.Deadline,
             quest.MaxContributors,
+            claimedByUserId,
             skills,
             quest.CreatedAt);
     }

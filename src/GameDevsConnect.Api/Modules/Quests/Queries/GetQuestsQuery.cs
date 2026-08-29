@@ -78,6 +78,10 @@ public class GetQuestsQueryHandler(AppDbContext db) : IRequestHandler<GetQuestsQ
                 (qs, s) => new { qs.QuestId, Skill = new QuestSkillDto(s.Id, s.Name, s.Category) })
             .ToListAsync(cancellationToken);
 
+        var activeClaimsByQuest = await db.QuestAssignments
+            .Where(a => questIds.Contains(a.QuestId) && a.ReleasedAt == null)
+            .ToDictionaryAsync(a => a.QuestId, a => (Guid?)a.UserId, cancellationToken);
+
         var dtos = rows.Select(r => new QuestDto(
             r.Quest.Id,
             r.Project.Id,
@@ -93,6 +97,7 @@ public class GetQuestsQueryHandler(AppDbContext db) : IRequestHandler<GetQuestsQ
             r.Quest.Status,
             r.Quest.Deadline,
             r.Quest.MaxContributors,
+            activeClaimsByQuest.GetValueOrDefault(r.Quest.Id),
             skillsByQuest.Where(s => s.QuestId == r.Quest.Id).Select(s => s.Skill).ToList(),
             r.Quest.CreatedAt)).ToList();
 

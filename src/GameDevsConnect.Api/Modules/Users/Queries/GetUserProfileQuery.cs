@@ -13,6 +13,14 @@ public record UserSkillDto(Guid Id, string Name, SkillCategory Category);
 
 public record UserProjectSummaryDto(string Slug, string Title, string? LogoUrl, ProjectStatus Status);
 
+public record UserContributionDto(
+    Guid Id,
+    string ProjectSlug,
+    string ProjectTitle,
+    Guid QuestId,
+    string QuestTitle,
+    DateTimeOffset CreatedAt);
+
 public record UserProfileDto(
     Guid Id,
     string Username,
@@ -20,7 +28,8 @@ public record UserProfileDto(
     string? Bio,
     IReadOnlyList<UserLinkDto> Links,
     IReadOnlyList<UserSkillDto> Skills,
-    IReadOnlyList<UserProjectSummaryDto> Projects);
+    IReadOnlyList<UserProjectSummaryDto> Projects,
+    IReadOnlyList<UserContributionDto> Contributions);
 
 public record GetUserProfileQuery(string Username, Guid? RequestingUserId) : IRequest<Result<UserProfileDto>>;
 
@@ -53,7 +62,15 @@ public class GetUserProfileQueryHandler(AppDbContext db)
             .Select(p => new UserProjectSummaryDto(p.Slug, p.Title, p.LogoUrl, p.Status))
             .ToListAsync(cancellationToken);
 
+        var contributions = await db.Contributions
+            .Where(c => c.UserId == user.Id)
+            .OrderByDescending(c => c.CreatedAt)
+            .Join(db.Projects, c => c.ProjectId, p => p.Id, (c, p) => new { c, p })
+            .Join(db.Quests, x => x.c.QuestId, q => q.Id,
+                (x, q) => new UserContributionDto(x.c.Id, x.p.Slug, x.p.Title, q.Id, q.Title, x.c.CreatedAt))
+            .ToListAsync(cancellationToken);
+
         return Result<UserProfileDto>.Success(
-            new UserProfileDto(user.Id, user.Username, user.AvatarUrl, user.Bio, links, skills, projects));
+            new UserProfileDto(user.Id, user.Username, user.AvatarUrl, user.Bio, links, skills, projects, contributions));
     }
 }

@@ -88,7 +88,21 @@ export default async function UserProfilePage({
 
       <section>
         <h2>Contributions</h2>
-        <p>Noch keine Contributions (kommt in Phase 3).</p>
+        {profile.contributions.length === 0 ? (
+          <p>Noch keine Contributions.</p>
+        ) : (
+          <ul>
+            {profile.contributions.map((c) => (
+              <li key={c.id}>
+                <Link href={`/quests/${c.questId}`}>{c.questTitle}</Link>
+                {" — "}
+                <Link href={`/projects/${c.projectSlug}`}>{c.projectTitle}</Link>
+                {" · "}
+                {new Date(c.createdAt).toLocaleDateString()}
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </main>
   );

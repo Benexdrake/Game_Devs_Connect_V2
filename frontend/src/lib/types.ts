@@ -31,6 +31,7 @@ export type UserProfile = {
   links: UserLink[];
   skills: Skill[];
   projects: UserProjectSummary[];
+  contributions: UserContribution[];
 };
 
 export type ProjectMember = {
@@ -88,6 +89,45 @@ export type Quest = {
   status: QuestStatus;
   deadline: string | null;
   maxContributors: number;
+  claimedByUserId: string | null;
   requiredSkills: QuestSkill[];
+  createdAt: string;
+};
+
+export type SubmissionStatus = "PendingReview" | "ChangesRequested" | "Accepted" | "Rejected";
+
+export type SubmissionDecision = "Accept" | "Reject" | "RequestChanges";
+
+export type SubmissionFileEntry = {
+  id: string;
+  fileName: string;
+  contentType: string;
+  sizeBytes: number;
+  uploadedAt: string;
+};
+
+export type SubmissionLinkEntry = { id: string; url: string; label: string | null };
+
+export type Submission = {
+  id: string;
+  questId: string;
+  userId: string;
+  username: string;
+  description: string;
+  status: SubmissionStatus;
+  submittedAt: string;
+  reviewedAt: string | null;
+  reviewerId: string | null;
+  reviewComment: string | null;
+  files: SubmissionFileEntry[];
+  links: SubmissionLinkEntry[];
+};
+
+export type UserContribution = {
+  id: string;
+  projectSlug: string;
+  projectTitle: string;
+  questId: string;
+  questTitle: string;
   createdAt: string;
 };

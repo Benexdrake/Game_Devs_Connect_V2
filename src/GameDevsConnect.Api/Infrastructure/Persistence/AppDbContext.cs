@@ -1,3 +1,4 @@
+using GameDevsConnect.Api.Modules.Contributions.Domain;
 using GameDevsConnect.Api.Modules.Projects.Domain;
 using GameDevsConnect.Api.Modules.Quests.Domain;
 using GameDevsConnect.Api.Modules.Skills.Domain;
@@ -19,6 +20,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Quest> Quests => Set<Quest>();
     public DbSet<QuestSkill> QuestSkills => Set<QuestSkill>();
     public DbSet<QuestAssignment> QuestAssignments => Set<QuestAssignment>();
+    public DbSet<QuestSubmission> QuestSubmissions => Set<QuestSubmission>();
+    public DbSet<SubmissionFile> SubmissionFiles => Set<SubmissionFile>();
+    public DbSet<SubmissionLink> SubmissionLinks => Set<SubmissionLink>();
+    public DbSet<Contribution> Contributions => Set<Contribution>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

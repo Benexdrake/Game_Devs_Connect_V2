@@ -1,10 +1,12 @@
 using GameDevsConnect.Api.Infrastructure.Persistence;
 using GameDevsConnect.Api.Modules.Auth.Endpoints;
 using GameDevsConnect.Api.Modules.Auth.GitHub;
+using GameDevsConnect.Api.Modules.Contributions.Endpoints;
 using GameDevsConnect.Api.Modules.Projects.Endpoints;
 using GameDevsConnect.Api.Modules.Quests.Endpoints;
 using GameDevsConnect.Api.Modules.Skills.Endpoints;
 using GameDevsConnect.Api.Modules.Users.Endpoints;
+using GameDevsConnect.Api.Shared.Storage;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
@@ -19,6 +21,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.Configure<GitHubOAuthOptions>(builder.Configuration.GetSection(GitHubOAuthOptions.SectionName));
 builder.Services.AddHttpClient<GitHubOAuthClient>();
+
+builder.Services.Configure<StorageOptions>(builder.Configuration.GetSection(StorageOptions.SectionName));
+builder.Services.AddSingleton<IFileStorage, LocalFileStorage>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
@@ -74,5 +79,6 @@ app.MapUserEndpoints();
 app.MapSkillEndpoints();
 app.MapProjectEndpoints();
 app.MapQuestEndpoints();
+app.MapContributionEndpoints();
 
 app.Run();

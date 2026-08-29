@@ -2,6 +2,7 @@
 bin/
 obj/
 *.user
+src/GameDevsConnect.Api/uploads/
 
 # Node / Next.js
 node_modules/
