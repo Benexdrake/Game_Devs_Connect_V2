@@ -46,25 +46,34 @@ export function LeftNav() {
     };
   }, []);
 
-  const items = [
+  const items: {
+    href: string;
+    icon: typeof Home;
+    label: string;
+    badge: number;
+    avatarUrl?: string | null;
+  }[] = [
     { href: "/", icon: Home, label: "Home", badge: 0 },
     { href: "/notifications", icon: Bell, label: "Notifications", badge: unreadCount },
     { href: "/discover", icon: Compass, label: "Discover", badge: 0 },
     { href: "/quests", icon: Swords, label: "Quests", badge: 0 },
     { href: "/search", icon: Search, label: "Suche", badge: 0 },
-    ...(me ? [{ href: `/users/${me.username}`, icon: User, label: "Profil", badge: 0 }] : []),
+    ...(me ? [{ href: `/users/${me.username}`, icon: User, label: "Profil", badge: 0, avatarUrl: me.avatarUrl }] : []),
   ];
 
   return (
     <nav
       className={clsx(
         "fixed inset-x-0 bottom-0 z-20 flex flex-row justify-around gap-2 border-t-2 border-border-strong bg-surface p-2",
-        // left-edge tracks the centered max-w-3xl content column (half of
-        // 768px, plus this nav's own ~72px width and a 24px gap) instead of
-        // hugging the viewport edge, so it sits right next to content like
-        // on X regardless of how wide the window is. Falls back to 1rem
-        // from the edge once the viewport is too narrow for that gap.
-        "lg:inset-x-auto lg:top-1/2 lg:left-[max(1rem,calc(50vw-480px))] lg:bottom-auto lg:flex-col lg:justify-start lg:gap-3 lg:-translate-y-1/2 lg:rounded-lg lg:border-2 lg:p-3",
+        // left-edge tracks the centered content column (half of the widest
+        // PageContainer variant in use, 1200px, plus this nav's own ~72px
+        // width and a 24px gap) instead of hugging the viewport edge, so it
+        // sits right next to content like on X regardless of how wide the
+        // window is. Narrower pages just get extra breathing room - the
+        // important part is it never sits UNDER a wider page's content.
+        // Falls back to 1rem from the edge once the viewport is too narrow
+        // for that gap.
+        "lg:inset-x-auto lg:top-1/2 lg:left-[max(1rem,calc(50vw-696px))] lg:bottom-auto lg:flex-col lg:justify-start lg:gap-3 lg:-translate-y-1/2 lg:rounded-lg lg:border-2 lg:p-3",
       )}
     >
       {items.map((item) => {
@@ -82,10 +91,15 @@ export function LeftNav() {
                 : "border-border text-text-muted hover:border-accent hover:text-accent-bright",
             )}
           >
-            <Icon size={22} />
+            {item.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={item.avatarUrl} alt="" className="h-8 w-8 rounded-full object-cover" />
+            ) : (
+              <Icon size={22} />
+            )}
             {item.badge > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-medium text-text">
-                {item.badge > 9 ? "9+" : item.badge}
+              <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-danger text-[9px] font-semibold text-text">
+                {item.badge > 99 ? "99+" : item.badge}
               </span>
             )}
           </Link>
