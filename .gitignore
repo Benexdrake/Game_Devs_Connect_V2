@@ -1,0 +1,25 @@
+# .NET
+bin/
+obj/
+*.user
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+next-env.d.ts
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Editors / OS
+.vs/
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
