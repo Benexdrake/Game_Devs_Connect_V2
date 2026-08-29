@@ -23,8 +23,8 @@ public class Project
     public string? Description { get; set; }
     public string? LogoUrl { get; set; }
     public string? BannerUrl { get; set; }
-    public string? Engine { get; set; }
-    public string? Genre { get; set; }
+    public Guid? EngineId { get; set; }
+    public string? GitHubRepoFullName { get; set; }
     public ProjectStatus Status { get; set; } = ProjectStatus.Concept;
     public ProjectVisibility Visibility { get; set; } = ProjectVisibility.Public;
     public DateTimeOffset CreatedAt { get; set; }

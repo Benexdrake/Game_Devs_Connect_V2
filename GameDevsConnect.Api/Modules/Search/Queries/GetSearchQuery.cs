@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameDevsConnect.Api.Modules.Search.Queries;
 
-public record SearchProjectDto(string Slug, string Title, string? LogoUrl, string? Engine, string? Genre);
+public record SearchProjectDto(string Slug, string Title, string? LogoUrl, string? EngineName, IReadOnlyList<string> GenreNames);
 
 public record SearchQuestDto(Guid Id, string Title, string ProjectSlug, string ProjectTitle, QuestDifficulty Difficulty, int XpReward);
 
@@ -39,7 +39,14 @@ public class GetSearchQueryHandler(AppDbContext db) : IRequestHandler<GetSearchQ
                 .Where(p => EF.Property<NpgsqlTypes.NpgsqlTsVector>(p, "SearchVector").Matches(EF.Functions.PlainToTsQuery("english", q)))
                 .OrderByDescending(p => p.UpdatedAt)
                 .Take(MaxResults)
-                .Select(p => new SearchProjectDto(p.Slug, p.Title, p.LogoUrl, p.Engine, p.Genre))
+                .Select(p => new SearchProjectDto(
+                    p.Slug,
+                    p.Title,
+                    p.LogoUrl,
+                    db.Engines.Where(e => e.Id == p.EngineId).Select(e => e.Name).FirstOrDefault(),
+                    db.ProjectGenres.Where(pg => pg.ProjectId == p.Id)
+                        .Join(db.Genres, pg => pg.GenreId, g => g.Id, (pg, g) => g.Name)
+                        .ToList()))
                 .ToListAsync(cancellationToken)
             : [];
 

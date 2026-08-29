@@ -3,6 +3,7 @@ using System;
 using GameDevsConnect.Api.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260829150116_AddEnginesGenresAndProjectGitHubRepo")]
+    partial class AddEnginesGenresAndProjectGitHubRepo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -321,9 +324,6 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset?>("ReadAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");
@@ -605,26 +605,20 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = new Guid("b14f822f-009e-4bdd-8ee8-11f717c507e8"),
-                            Category = "Engines",
+                            Category = "Programming",
                             Name = "Unity"
                         },
                         new
                         {
                             Id = new Guid("30e3205f-3abd-4b5d-89e9-9d4b32f282b6"),
-                            Category = "Engines",
+                            Category = "Programming",
                             Name = "Unreal Engine"
                         },
                         new
                         {
                             Id = new Guid("2838e506-cb9c-408a-ac3e-2a525c3d982b"),
-                            Category = "Engines",
+                            Category = "Programming",
                             Name = "Godot"
-                        },
-                        new
-                        {
-                            Id = new Guid("76e0dfb8-b0d1-4151-b9ff-4e200ec03914"),
-                            Category = "Engines",
-                            Name = "GameMaker"
                         },
                         new
                         {
@@ -640,42 +634,6 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c72ce11d-8e03-4f87-9ee9-ddf2d7e80d3b"),
-                            Category = "Programming",
-                            Name = "Python"
-                        },
-                        new
-                        {
-                            Id = new Guid("11128a9b-c4de-45b1-96de-f8c59c5abe33"),
-                            Category = "Programming",
-                            Name = "Lua"
-                        },
-                        new
-                        {
-                            Id = new Guid("4f44b26c-63c8-4bf4-a6a5-69c070b7bc29"),
-                            Category = "Programming",
-                            Name = "GDScript"
-                        },
-                        new
-                        {
-                            Id = new Guid("deccc28e-e8be-4cca-9f2b-7415f47e468b"),
-                            Category = "Art2D",
-                            Name = "Photoshop"
-                        },
-                        new
-                        {
-                            Id = new Guid("4688962e-b2f6-4958-9859-6c00d6783259"),
-                            Category = "Art2D",
-                            Name = "Illustrator"
-                        },
-                        new
-                        {
-                            Id = new Guid("aa33b59d-e508-4576-b586-b7810ab89084"),
-                            Category = "Art2D",
-                            Name = "Aseprite"
-                        },
-                        new
-                        {
                             Id = new Guid("ccba96cf-0795-461b-8c92-99fcf4dd8bbe"),
                             Category = "Art3D",
                             Name = "Blender"
@@ -688,15 +646,21 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                         },
                         new
                         {
-                            Id = new Guid("78b25059-9ae8-408f-925c-75d98676263d"),
-                            Category = "Art3D",
-                            Name = "ZBrush"
+                            Id = new Guid("deccc28e-e8be-4cca-9f2b-7415f47e468b"),
+                            Category = "Art2D",
+                            Name = "Photoshop"
                         },
                         new
                         {
-                            Id = new Guid("17174a66-afe0-4a05-904b-657273b638b2"),
+                            Id = new Guid("67aabe52-5d35-4e68-96da-ab51702eece9"),
+                            Category = "Art2D",
+                            Name = "2D Art"
+                        },
+                        new
+                        {
+                            Id = new Guid("439780f2-c1da-4f58-9207-f6efe2badfd7"),
                             Category = "Art3D",
-                            Name = "Substance Painter"
+                            Name = "3D Art"
                         },
                         new
                         {
@@ -712,12 +676,6 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                         },
                         new
                         {
-                            Id = new Guid("993fe2fc-8afc-40fe-9a83-e686ead6ccf3"),
-                            Category = "Animation",
-                            Name = "VFX"
-                        },
-                        new
-                        {
                             Id = new Guid("f43e2b0d-5cbd-48de-bcf7-39b679195498"),
                             Category = "Audio",
                             Name = "Music"
@@ -727,18 +685,6 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                             Id = new Guid("81b3199c-400f-4c3c-a74a-49ffd46e521c"),
                             Category = "Audio",
                             Name = "Sound Design"
-                        },
-                        new
-                        {
-                            Id = new Guid("1cf30b71-1812-4221-be32-0f526a027bb3"),
-                            Category = "Audio",
-                            Name = "Voice Acting"
-                        },
-                        new
-                        {
-                            Id = new Guid("edbbeb85-0210-4a75-a354-8873ebee6f79"),
-                            Category = "Audio",
-                            Name = "Wwise / FMOD"
                         },
                         new
                         {
@@ -754,57 +700,9 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                         },
                         new
                         {
-                            Id = new Guid("9b5c497b-1d79-4850-8123-8ed4525640e9"),
-                            Category = "Design",
-                            Name = "UI/UX Design"
-                        },
-                        new
-                        {
-                            Id = new Guid("bf950d08-5ca0-431a-aaea-df42d829fcf1"),
-                            Category = "Design",
-                            Name = "Narrative Design"
-                        },
-                        new
-                        {
                             Id = new Guid("145d0eaf-6309-448a-bb15-50a1523ecb24"),
                             Category = "Writing",
                             Name = "Writing"
-                        },
-                        new
-                        {
-                            Id = new Guid("5eb0e9c4-dbad-426b-a429-c74aac945a24"),
-                            Category = "Writing",
-                            Name = "Dialogue Writing"
-                        },
-                        new
-                        {
-                            Id = new Guid("275ac4a5-1897-4959-98be-a8a53c7e8372"),
-                            Category = "Writing",
-                            Name = "Localization"
-                        },
-                        new
-                        {
-                            Id = new Guid("bb2e2d42-8ce1-4d6b-9457-9809aec7d707"),
-                            Category = "Production",
-                            Name = "Project Management"
-                        },
-                        new
-                        {
-                            Id = new Guid("381cf829-8c1c-4808-876c-231bbdb13ba5"),
-                            Category = "Production",
-                            Name = "QA / Testing"
-                        },
-                        new
-                        {
-                            Id = new Guid("447e1a2b-9b9c-44cf-afcc-7c2cfe5ae031"),
-                            Category = "Production",
-                            Name = "Community Management"
-                        },
-                        new
-                        {
-                            Id = new Guid("4509c131-7068-4984-b592-78a6ac8a1163"),
-                            Category = "Production",
-                            Name = "Marketing"
                         });
                 });
 
@@ -826,9 +724,6 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("ProjectId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("QuestId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");
@@ -840,8 +735,6 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                     b.HasIndex("CreatedAt");
 
                     b.HasIndex("ProjectId");
-
-                    b.HasIndex("QuestId");
 
                     b.ToTable("activity_events", (string)null);
                 });
@@ -1031,9 +924,6 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Label")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Platform")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1288,11 +1178,6 @@ namespace GameDevsConnect.Api.Infrastructure.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("GameDevsConnect.Api.Modules.Quests.Domain.Quest", null)
-                        .WithMany()
-                        .HasForeignKey("QuestId")
-                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("GameDevsConnect.Api.Modules.Social.Domain.Comment", b =>

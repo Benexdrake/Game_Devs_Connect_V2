@@ -32,7 +32,7 @@ public static class ContributionEndpoints
             var inputs = files.Select(f => new UploadedFileInput(f.FileName, f.ContentType, f.Length, f.OpenReadStream())).ToList();
             var result = await mediator.Send(new UploadSubmissionFilesCommand(id, http.GetUserId(), inputs), ct);
             return result.ToHttpResult();
-        }).RequireAuthorization();
+        }).RequireAuthorization().DisableAntiforgery();
 
         app.MapGet("/api/submissions/{id:guid}/files/{fileId:guid}", async (Guid id, Guid fileId, IMediator mediator, HttpContext http, CancellationToken ct) =>
         {

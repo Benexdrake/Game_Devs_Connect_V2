@@ -15,6 +15,13 @@ public record GitHubUser(
     [property: JsonPropertyName("login")] string Login,
     [property: JsonPropertyName("avatar_url")] string? AvatarUrl);
 
+public record GitHubRepo(
+    [property: JsonPropertyName("full_name")] string FullName,
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("description")] string? Description,
+    [property: JsonPropertyName("private")] bool Private,
+    [property: JsonPropertyName("updated_at")] DateTimeOffset UpdatedAt);
+
 public class GitHubOAuthClient(HttpClient httpClient, IOptions<GitHubOAuthOptions> options)
 {
     private readonly GitHubOAuthOptions _options = options.Value;
@@ -25,6 +32,10 @@ public class GitHubOAuthClient(HttpClient httpClient, IOptions<GitHubOAuthOption
         {
             ["client_id"] = _options.ClientId,
             ["redirect_uri"] = _options.CallbackUrl,
+            // No repo scope requested on purpose: GitHub grants read-only access to a
+            // user's public repositories (listing, commits, issues, releases) to any
+            // authenticated token regardless of scope. Adding "public_repo" would only
+            // grant *write* access on top of that, which this app never needs.
             ["scope"] = "read:user",
             ["state"] = state,
             ["allow_signup"] = "true",
@@ -69,5 +80,22 @@ public class GitHubOAuthClient(HttpClient httpClient, IOptions<GitHubOAuthOption
         }
 
         return await response.Content.ReadFromJsonAsync<GitHubUser>(cancellationToken: ct);
+    }
+
+    public async Task<IReadOnlyList<GitHubRepo>?> GetUserRepositoriesAsync(string accessToken, CancellationToken ct)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get,
+            "https://api.github.com/user/repos?affiliation=owner&sort=updated&per_page=100");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        request.Headers.UserAgent.ParseAdd("GameDevsConnect");
+        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
+
+        using var response = await httpClient.SendAsync(request, ct);
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+
+        return await response.Content.ReadFromJsonAsync<List<GitHubRepo>>(cancellationToken: ct);
     }
 }

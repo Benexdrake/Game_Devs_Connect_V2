@@ -1,3 +1,4 @@
+using GameDevsConnect.Api.Modules.Engines.Domain;
 using GameDevsConnect.Api.Modules.Projects.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -17,6 +18,8 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(p => p.Title).IsRequired();
         builder.Property(p => p.Status).HasConversion<string>().IsRequired();
         builder.Property(p => p.Visibility).HasConversion<string>().IsRequired();
+
+        builder.HasOne<Engine>().WithMany().HasForeignKey(p => p.EngineId).OnDelete(DeleteBehavior.SetNull);
 
         builder.Property<NpgsqlTsVector>("SearchVector")
             .IsGeneratedTsVectorColumn("english", [nameof(Project.Title), nameof(Project.Description)]);

@@ -46,15 +46,17 @@ public class GitHubCallbackCommandHandler(GitHubOAuthClient gitHubClient, AppDbC
                 GitHubId = gitHubId,
                 Username = username,
                 AvatarUrl = gitHubUser.AvatarUrl,
+                GitHubAccessToken = accessToken,
                 CreatedAt = now,
                 UpdatedAt = now,
             };
             db.Users.Add(user);
             await db.SaveChangesAsync(cancellationToken);
         }
-        else if (user.AvatarUrl != gitHubUser.AvatarUrl)
+        else if (user.AvatarUrl != gitHubUser.AvatarUrl || user.GitHubAccessToken != accessToken)
         {
             user.AvatarUrl = gitHubUser.AvatarUrl;
+            user.GitHubAccessToken = accessToken;
             user.UpdatedAt = DateTimeOffset.UtcNow;
             await db.SaveChangesAsync(cancellationToken);
         }

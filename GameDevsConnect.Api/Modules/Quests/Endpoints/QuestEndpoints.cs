@@ -33,7 +33,7 @@ public record QuestListQueryParams(
     string? ProjectSlug,
     QuestDifficulty? Difficulty,
     int? MinXp,
-    string? Engine);
+    Guid? EngineId);
 
 public static class QuestEndpoints
 {
@@ -76,7 +76,7 @@ public static class QuestEndpoints
         {
             var userId = http.User.Identity?.IsAuthenticated == true ? http.GetUserId() : (Guid?)null;
             var result = await mediator.Send(
-                new GetQuestsQuery(q.Search, q.Category, q.SkillId, q.ProjectSlug, q.Difficulty, q.MinXp, q.Engine, userId), ct);
+                new GetQuestsQuery(q.Search, q.Category, q.SkillId, q.ProjectSlug, q.Difficulty, q.MinXp, q.EngineId, userId), ct);
             return result.ToHttpResult();
         });
 

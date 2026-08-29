@@ -13,8 +13,9 @@ public record UpdateProjectCommand(
     string? Description,
     string? LogoUrl,
     string? BannerUrl,
-    string? Engine,
-    string? Genre,
+    Guid? EngineId,
+    IReadOnlyList<Guid>? GenreIds,
+    string? GitHubRepoFullName,
     ProjectStatus? Status,
     ProjectVisibility? Visibility) : IRequest<Result<ProjectDto>>;
 
@@ -35,15 +36,35 @@ public class UpdateProjectCommandHandler(AppDbContext db)
             return Result<ProjectDto>.Forbidden("Only the owner or an admin can edit this project.");
         }
 
+        if (request.EngineId is not null && !await db.Engines.AnyAsync(e => e.Id == request.EngineId, cancellationToken))
+        {
+            return Result<ProjectDto>.ValidationError("Unknown engine.");
+        }
+
         if (request.Title is not null) project.Title = request.Title;
         if (request.Description is not null) project.Description = request.Description;
         if (request.LogoUrl is not null) project.LogoUrl = request.LogoUrl;
         if (request.BannerUrl is not null) project.BannerUrl = request.BannerUrl;
-        if (request.Engine is not null) project.Engine = request.Engine;
-        if (request.Genre is not null) project.Genre = request.Genre;
+        if (request.EngineId is not null) project.EngineId = request.EngineId;
+        if (request.GitHubRepoFullName is not null) project.GitHubRepoFullName = request.GitHubRepoFullName;
         if (request.Status is not null) project.Status = request.Status.Value;
         if (request.Visibility is not null) project.Visibility = request.Visibility.Value;
         project.UpdatedAt = DateTimeOffset.UtcNow;
+
+        if (request.GenreIds is not null)
+        {
+            var existing = await db.ProjectGenres.Where(pg => pg.ProjectId == project.Id).ToListAsync(cancellationToken);
+            db.ProjectGenres.RemoveRange(existing);
+
+            var validGenreIds = await db.Genres
+                .Where(g => request.GenreIds.Contains(g.Id))
+                .Select(g => g.Id)
+                .ToListAsync(cancellationToken);
+            foreach (var genreId in validGenreIds)
+            {
+                db.ProjectGenres.Add(new ProjectGenre { ProjectId = project.Id, GenreId = genreId });
+            }
+        }
 
         await db.SaveChangesAsync(cancellationToken);
 

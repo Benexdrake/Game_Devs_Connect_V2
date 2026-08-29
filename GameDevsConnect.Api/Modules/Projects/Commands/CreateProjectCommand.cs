@@ -11,8 +11,11 @@ public record CreateProjectCommand(
     Guid CreatorUserId,
     string Title,
     string? Description,
-    string? Engine,
-    string? Genre,
+    string? BannerUrl,
+    Guid? EngineId,
+    IReadOnlyList<Guid>? GenreIds,
+    string? GitHubRepoFullName,
+    ProjectStatus Status,
     ProjectVisibility Visibility) : IRequest<Result<ProjectDto>>;
 
 public partial class CreateProjectCommandHandler(AppDbContext db)
@@ -25,6 +28,11 @@ public partial class CreateProjectCommandHandler(AppDbContext db)
             return Result<ProjectDto>.ValidationError("Title is required.");
         }
 
+        if (request.EngineId is not null && !await db.Engines.AnyAsync(e => e.Id == request.EngineId, cancellationToken))
+        {
+            return Result<ProjectDto>.ValidationError("Unknown engine.");
+        }
+
         var slug = await MakeUniqueSlugAsync(Slugify(request.Title), cancellationToken);
         var now = DateTimeOffset.UtcNow;
 
@@ -34,8 +42,10 @@ public partial class CreateProjectCommandHandler(AppDbContext db)
             Slug = slug,
             Title = request.Title,
             Description = request.Description,
-            Engine = request.Engine,
-            Genre = request.Genre,
+            BannerUrl = request.BannerUrl,
+            EngineId = request.EngineId,
+            GitHubRepoFullName = request.GitHubRepoFullName,
+            Status = request.Status,
             Visibility = request.Visibility,
             CreatedAt = now,
             UpdatedAt = now,
@@ -49,6 +59,18 @@ public partial class CreateProjectCommandHandler(AppDbContext db)
             Role = ProjectRole.Owner,
             JoinedAt = now,
         });
+
+        if (request.GenreIds is { Count: > 0 })
+        {
+            var validGenreIds = await db.Genres
+                .Where(g => request.GenreIds.Contains(g.Id))
+                .Select(g => g.Id)
+                .ToListAsync(cancellationToken);
+            foreach (var genreId in validGenreIds)
+            {
+                db.ProjectGenres.Add(new ProjectGenre { ProjectId = project.Id, GenreId = genreId });
+            }
+        }
 
         await db.SaveChangesAsync(cancellationToken);
 

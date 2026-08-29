@@ -1,4 +1,6 @@
 using GameDevsConnect.Api.Modules.Contributions.Domain;
+using GameDevsConnect.Api.Modules.Engines.Domain;
+using GameDevsConnect.Api.Modules.Genres.Domain;
 using GameDevsConnect.Api.Modules.Notifications.Domain;
 using GameDevsConnect.Api.Modules.Projects.Domain;
 using GameDevsConnect.Api.Modules.Quests.Domain;
@@ -20,6 +22,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
     public DbSet<Tag> Tags => Set<Tag>();
     public DbSet<ProjectTag> ProjectTags => Set<ProjectTag>();
+    public DbSet<Engine> Engines => Set<Engine>();
+    public DbSet<Genre> Genres => Set<Genre>();
+    public DbSet<ProjectGenre> ProjectGenres => Set<ProjectGenre>();
     public DbSet<Quest> Quests => Set<Quest>();
     public DbSet<QuestSkill> QuestSkills => Set<QuestSkill>();
     public DbSet<QuestAssignment> QuestAssignments => Set<QuestAssignment>();

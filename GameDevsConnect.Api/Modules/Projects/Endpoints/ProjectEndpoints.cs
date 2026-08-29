@@ -7,15 +7,24 @@ using MediatR;
 
 namespace GameDevsConnect.Api.Modules.Projects.Endpoints;
 
-public record CreateProjectRequest(string Title, string? Description, string? Engine, string? Genre, ProjectVisibility Visibility);
+public record CreateProjectRequest(
+    string Title,
+    string? Description,
+    string? BannerUrl,
+    Guid? EngineId,
+    IReadOnlyList<Guid>? GenreIds,
+    string? GitHubRepoFullName,
+    ProjectStatus? Status,
+    ProjectVisibility Visibility);
 
 public record UpdateProjectRequest(
     string? Title,
     string? Description,
     string? LogoUrl,
     string? BannerUrl,
-    string? Engine,
-    string? Genre,
+    Guid? EngineId,
+    IReadOnlyList<Guid>? GenreIds,
+    string? GitHubRepoFullName,
     ProjectStatus? Status,
     ProjectVisibility? Visibility);
 
@@ -32,7 +41,8 @@ public static class ProjectEndpoints
         group.MapPost("/", async (CreateProjectRequest body, IMediator mediator, HttpContext http, CancellationToken ct) =>
         {
             var result = await mediator.Send(
-                new CreateProjectCommand(http.GetUserId(), body.Title, body.Description, body.Engine, body.Genre, body.Visibility), ct);
+                new CreateProjectCommand(http.GetUserId(), body.Title, body.Description, body.BannerUrl,
+                    body.EngineId, body.GenreIds, body.GitHubRepoFullName, body.Status ?? ProjectStatus.Concept, body.Visibility), ct);
             return result.ToHttpResult();
         }).RequireAuthorization();
 
@@ -53,7 +63,7 @@ public static class ProjectEndpoints
         {
             var result = await mediator.Send(
                 new UpdateProjectCommand(slug, http.GetUserId(), body.Title, body.Description, body.LogoUrl,
-                    body.BannerUrl, body.Engine, body.Genre, body.Status, body.Visibility), ct);
+                    body.BannerUrl, body.EngineId, body.GenreIds, body.GitHubRepoFullName, body.Status, body.Visibility), ct);
             return result.ToHttpResult();
         }).RequireAuthorization();
 

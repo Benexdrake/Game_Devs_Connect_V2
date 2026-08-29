@@ -15,7 +15,7 @@ public record GetQuestsQuery(
     string? ProjectSlug,
     QuestDifficulty? Difficulty,
     int? MinXp,
-    string? Engine,
+    Guid? EngineId,
     Guid? RequestingUserId) : IRequest<Result<IReadOnlyList<QuestDto>>>;
 
 public class GetQuestsQueryHandler(AppDbContext db) : IRequestHandler<GetQuestsQuery, Result<IReadOnlyList<QuestDto>>>
@@ -58,9 +58,9 @@ public class GetQuestsQueryHandler(AppDbContext db) : IRequestHandler<GetQuestsQ
             query = query.Where(x => x.Quest.XpReward >= request.MinXp);
         }
 
-        if (request.Engine is not null)
+        if (request.EngineId is not null)
         {
-            query = query.Where(x => x.Project.Engine == request.Engine);
+            query = query.Where(x => x.Project.EngineId == request.EngineId);
         }
 
         if (request.SkillId is not null)
