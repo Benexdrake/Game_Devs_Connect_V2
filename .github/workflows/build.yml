@@ -51,16 +51,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Compute lowercase image base (GHCR requires it)
+        id: vars
+        run: echo "repo=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
       - uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile.api
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}/api:latest
+          tags: ${{ env.REGISTRY }}/${{ steps.vars.outputs.repo }}/api:latest
 
       - uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile.web
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}/web:latest
+          tags: ${{ env.REGISTRY }}/${{ steps.vars.outputs.repo }}/web:latest
