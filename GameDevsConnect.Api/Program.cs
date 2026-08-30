@@ -1,4 +1,5 @@
 using GameDevsConnect.Api.Infrastructure.Persistence;
+using GameDevsConnect.Api.Infrastructure.Seeding;
 using GameDevsConnect.Api.Modules.Auth.Endpoints;
 using GameDevsConnect.Api.Modules.Auth.GitHub;
 using GameDevsConnect.Api.Modules.Contributions.Endpoints;
@@ -82,7 +83,14 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+
+    if (builder.Configuration.GetValue("Seed:Enabled", false))
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        await DataSeeder.SeedAsync(db, logger);
+    }
 }
 
 var uploadsPath = Path.GetFullPath(app.Services.GetRequiredService<IOptions<StorageOptions>>().Value.UploadsPath);

@@ -29,6 +29,7 @@ services:
       Cors__AllowedOrigins__0: ${FRONTEND_BASE_URL}
       Cookies__RequireHttps: ${COOKIES_REQUIRE_HTTPS:-true}
       Storage__UploadsPath: /data/uploads
+      Seed__Enabled: ${SEED_ENABLED:-false}
     volumes:
       - uploads-data:/data/uploads
     ports:

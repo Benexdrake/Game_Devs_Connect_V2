@@ -1,0 +1,363 @@
+{
+  "genres": [
+    "Platformer",
+    "RPG",
+    "Shooter",
+    "Puzzle",
+    "Strategy",
+    "Simulation",
+    "Horror",
+    "Sandbox",
+    "Racing",
+    "Adventure",
+    "Roguelike",
+    "Metroidvania"
+  ],
+  "engines": [
+    "Unity",
+    "Unreal Engine",
+    "Godot",
+    "GameMaker",
+    "Custom Engine"
+  ],
+  "skills": [
+    { "name": "C#", "category": "Programming" },
+    { "name": "C++", "category": "Programming" },
+    { "name": "GDScript", "category": "Programming" },
+    { "name": "Unity", "category": "Engines" },
+    { "name": "Unreal Engine", "category": "Engines" },
+    { "name": "Godot", "category": "Engines" },
+    { "name": "Pixel Art", "category": "Art2D" },
+    { "name": "Concept Art", "category": "Art2D" },
+    { "name": "UI/UX Design", "category": "Art2D" },
+    { "name": "3D Modeling", "category": "Art3D" },
+    { "name": "Texturing", "category": "Art3D" },
+    { "name": "Character Rigging", "category": "Animation" },
+    { "name": "VFX Animation", "category": "Animation" },
+    { "name": "Sound Design", "category": "Audio" },
+    { "name": "Music Composition", "category": "Audio" },
+    { "name": "Level Design", "category": "Design" },
+    { "name": "Game Design", "category": "Design" },
+    { "name": "Narrative Writing", "category": "Writing" },
+    { "name": "Dialogue Writing", "category": "Writing" },
+    { "name": "Project Management", "category": "Production" },
+    { "name": "QA Testing", "category": "Production" }
+  ],
+  "users": [
+    {
+      "gitHubId": "1001",
+      "username": "pixel_pioneer",
+      "avatarUrl": "https://i.pravatar.cc/300?img=12",
+      "bio": "Solo dev & pixel artist chasing that SNES-era feel. Currently juggling three projects and way too much coffee.",
+      "skills": ["C#", "Unity", "Pixel Art"],
+      "projects": [
+        {
+          "slug": "emberfall-chronicles",
+          "title": "Emberfall Chronicles",
+          "description": "A pixel-art action RPG about a fallen kingdom, its last ember-mage, and the creatures hunting her down.",
+          "logoUrl": "https://picsum.photos/seed/emberfall-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/emberfall-banner/1200/400",
+          "engine": "Unity",
+          "status": "InDevelopment",
+          "visibility": "Public",
+          "genres": ["RPG", "Platformer"],
+          "quests": [
+            { "title": "Implement dash-attack combo chain", "description": "Add a 3-hit dash-attack combo with cancel windows into the player controller.", "category": "Programming", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 21, "maxContributors": 1, "skills": ["C#", "Unity"] },
+            { "title": "Design boss arena for Act 2", "description": "Block out the Emberwarden boss arena, including hazard placement and camera bounds.", "category": "Design", "difficulty": "Hard", "status": "Open", "deadlineDaysFromNow": 30, "maxContributors": 1, "skills": ["Level Design"] },
+            { "title": "Draw tileset for Ashen Marshes biome", "description": "16x16 pixel tileset covering marsh water, dead trees, and fog overlays.", "category": "Art2D", "difficulty": "Medium", "status": "Claimed", "deadlineDaysFromNow": 14, "maxContributors": 1, "skills": ["Pixel Art"] },
+            { "title": "Compose ambient track for hub village", "description": "Looping 2-minute ambient track, melancholic tone, light strings and wind instruments.", "category": "Audio", "difficulty": "Easy", "status": "InProgress", "deadlineDaysFromNow": 10, "maxContributors": 1, "skills": ["Music Composition"] },
+            { "title": "Write dialogue for the blacksmith NPC arc", "description": "Three-stage dialogue tree for the blacksmith questline, including a betrayal branch.", "category": "Writing", "difficulty": "Easy", "status": "Accepted", "deadlineDaysFromNow": null, "maxContributors": 1, "skills": ["Dialogue Writing"] }
+          ]
+        },
+        {
+          "slug": "neon-drift",
+          "title": "Neon Drift",
+          "description": "Arcade-style anti-gravity racer through a neon-soaked cyberpunk city. Think low-poly speed and drift trails.",
+          "logoUrl": "https://picsum.photos/seed/neondrift-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/neondrift-banner/1200/400",
+          "engine": "Unity",
+          "status": "Concept",
+          "visibility": "Public",
+          "genres": ["Racing", "Sandbox"],
+          "quests": [
+            { "title": "Prototype hover-vehicle physics", "description": "Build a first-pass rigidbody controller for anti-gravity drift and boost pads.", "category": "Programming", "difficulty": "Hard", "status": "Open", "deadlineDaysFromNow": 25, "maxContributors": 1, "skills": ["C#", "Unity"] },
+            { "title": "Concept art for city skyline backdrop", "description": "Establish the visual language for the neon skyline parallax layers.", "category": "Art2D", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 18, "maxContributors": 1, "skills": ["Concept Art"] },
+            { "title": "Model track barrier and neon signage kit", "description": "Modular low-poly kit for track barriers, gates, and holographic signage.", "category": "Art3D", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 20, "maxContributors": 2, "skills": ["3D Modeling"] },
+            { "title": "Sound design for boost & collision FX", "description": "Punchy synth-based SFX for boosting, drifting, and wall collisions.", "category": "Audio", "difficulty": "Easy", "status": "Open", "deadlineDaysFromNow": null, "maxContributors": 1, "skills": ["Sound Design"] },
+            { "title": "Draft core game design one-pager", "description": "Define the loop, progression, and unlock system for the vertical slice.", "category": "Design", "difficulty": "Easy", "status": "InReview", "deadlineDaysFromNow": 7, "maxContributors": 1, "skills": ["Game Design"] }
+          ]
+        },
+        {
+          "slug": "moss-and-ember",
+          "title": "Moss & Ember",
+          "description": "A cozy puzzle-adventure about tending a dying forest shrine, one lantern at a time.",
+          "logoUrl": "https://picsum.photos/seed/mossember-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/mossember-banner/1200/400",
+          "engine": "Unity",
+          "status": "Beta",
+          "visibility": "Public",
+          "genres": ["Puzzle", "Adventure"],
+          "quests": [
+            { "title": "Fix lantern-lighting puzzle softlock", "description": "Players can get stuck in the Grove of Whispers puzzle if lanterns are lit out of order.", "category": "Programming", "difficulty": "Medium", "status": "Claimed", "deadlineDaysFromNow": 5, "maxContributors": 1, "skills": ["C#", "Unity"] },
+            { "title": "Polish moss-growth shader", "description": "Improve the procedural moss spread shader for better performance on mid-range GPUs.", "category": "Programming", "difficulty": "Hard", "status": "Open", "deadlineDaysFromNow": 15, "maxContributors": 1, "skills": ["C#", "Unity"] },
+            { "title": "Animate firefly swarm behavior", "description": "Add flocking animation for ambient firefly swarms near lit shrines.", "category": "Animation", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 12, "maxContributors": 1, "skills": ["VFX Animation"] },
+            { "title": "Playtest and log Act 3 bugs", "description": "Full playthrough of Act 3 with structured bug reporting via the QA template.", "category": "Production", "difficulty": "Easy", "status": "Submitted", "deadlineDaysFromNow": 3, "maxContributors": 2, "skills": ["QA Testing"] },
+            { "title": "Write shrine-keeper backstory lore notes", "description": "Short lore entries unlocked as players restore each shrine.", "category": "Writing", "difficulty": "Easy", "status": "Accepted", "deadlineDaysFromNow": null, "maxContributors": 1, "skills": ["Narrative Writing"] }
+          ]
+        }
+      ]
+    },
+    {
+      "gitHubId": "1002",
+      "username": "nova_synth",
+      "avatarUrl": "https://i.pravatar.cc/300?img=32",
+      "bio": "Composer and sound designer moonlighting as a Godot tinkerer. I make games that sound better than they look (for now).",
+      "skills": ["Sound Design", "Music Composition", "Godot"],
+      "projects": [
+        {
+          "slug": "wisp-trails",
+          "title": "Wisp Trails",
+          "description": "A wordless adventure-puzzle game where you guide lost wisps home through a shifting forest.",
+          "logoUrl": "https://picsum.photos/seed/wisptrails-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/wisptrails-banner/1200/400",
+          "engine": "Godot",
+          "status": "InDevelopment",
+          "visibility": "Public",
+          "genres": ["Adventure", "Puzzle"],
+          "quests": [
+            { "title": "Build wisp-following AI state machine", "description": "Wisps should path toward the player's light radius but scatter when startled.", "category": "Programming", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 20, "maxContributors": 1, "skills": ["GDScript", "Godot"] },
+            { "title": "Paint background art for Whispering Glade", "description": "Layered parallax background art, muted greens and soft light shafts.", "category": "Art2D", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 22, "maxContributors": 1, "skills": ["Concept Art"] },
+            { "title": "Compose main theme motif", "description": "A 90-second wordless theme establishing the wisp motif, reused throughout the OST.", "category": "Audio", "difficulty": "Hard", "status": "InProgress", "deadlineDaysFromNow": 16, "maxContributors": 1, "skills": ["Music Composition"] },
+            { "title": "Design first three forest puzzle rooms", "description": "Introduce the light-guiding mechanic gradually across three rooms.", "category": "Design", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 18, "maxContributors": 1, "skills": ["Level Design"] },
+            { "title": "Rig wisp character for squash/stretch animation", "description": "Simple 2D rig for the wisp's idle float and startle reactions.", "category": "Animation", "difficulty": "Easy", "status": "Claimed", "deadlineDaysFromNow": 9, "maxContributors": 1, "skills": ["Character Rigging"] }
+          ]
+        },
+        {
+          "slug": "static-requiem",
+          "title": "Static Requiem",
+          "description": "A minimalist horror game set in an abandoned radio station where the broadcasts never really stopped.",
+          "logoUrl": "https://picsum.photos/seed/staticrequiem-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/staticrequiem-banner/1200/400",
+          "engine": "Godot",
+          "status": "Concept",
+          "visibility": "Public",
+          "genres": ["Horror", "Puzzle"],
+          "quests": [
+            { "title": "Prototype tape-rewind mechanic", "description": "Core mechanic: rewinding a cassette rewinds nearby environmental events.", "category": "Programming", "difficulty": "Hard", "status": "Open", "deadlineDaysFromNow": 28, "maxContributors": 1, "skills": ["GDScript", "Godot"] },
+            { "title": "Design station floor plan", "description": "Layout the radio station's three floors with sightlines for tension pacing.", "category": "Design", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 24, "maxContributors": 1, "skills": ["Level Design"] },
+            { "title": "Record and process static/noise SFX layers", "description": "Build a library of static, hum, and distorted-voice layers for dynamic mixing.", "category": "Audio", "difficulty": "Medium", "status": "InProgress", "deadlineDaysFromNow": 14, "maxContributors": 1, "skills": ["Sound Design"] },
+            { "title": "Write fragmented broadcast transcripts", "description": "Short, unsettling radio transcript fragments found as collectibles.", "category": "Writing", "difficulty": "Easy", "status": "Open", "deadlineDaysFromNow": null, "maxContributors": 1, "skills": ["Narrative Writing"] },
+            { "title": "Model rotary phone and reel-to-reel props", "description": "Two hero props needed for the opening puzzle sequence.", "category": "Art3D", "difficulty": "Easy", "status": "Open", "deadlineDaysFromNow": 19, "maxContributors": 1, "skills": ["3D Modeling"] }
+          ]
+        },
+        {
+          "slug": "skybound-reverie",
+          "title": "Skybound Reverie",
+          "description": "A gentle sky-island management sim about rebuilding a floating village after a great storm.",
+          "logoUrl": "https://picsum.photos/seed/skybound-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/skybound-banner/1200/400",
+          "engine": "Godot",
+          "status": "Released",
+          "visibility": "Public",
+          "genres": ["Simulation", "Sandbox"],
+          "quests": [
+            { "title": "Fix resource-cart pathfinding around bridges", "description": "Carts occasionally clip through half-built rope bridges.", "category": "Programming", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 11, "maxContributors": 1, "skills": ["GDScript", "Godot"] },
+            { "title": "Add post-launch weather variety", "description": "Introduce light rain and mist weather states with matching ambience.", "category": "Programming", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 26, "maxContributors": 1, "skills": ["GDScript", "Godot"] },
+            { "title": "Compose seasonal variation of main theme", "description": "Autumn variant of the village theme for the upcoming seasons update.", "category": "Audio", "difficulty": "Medium", "status": "Accepted", "deadlineDaysFromNow": null, "maxContributors": 1, "skills": ["Music Composition"] },
+            { "title": "Balance resource costs for tier-3 buildings", "description": "Tier-3 buildings are currently too cheap relative to playtime pacing.", "category": "Design", "difficulty": "Easy", "status": "InReview", "deadlineDaysFromNow": 6, "maxContributors": 1, "skills": ["Game Design"] },
+            { "title": "QA pass on new player onboarding", "description": "Full onboarding playtest focusing on first 15 minutes of play.", "category": "Production", "difficulty": "Easy", "status": "Open", "deadlineDaysFromNow": 13, "maxContributors": 2, "skills": ["QA Testing"] }
+          ]
+        }
+      ]
+    },
+    {
+      "gitHubId": "1003",
+      "username": "voidwright",
+      "avatarUrl": "https://i.pravatar.cc/300?img=51",
+      "bio": "Gameplay programmer, ex-AAA, now building the sci-fi shooters I always wanted to ship. Unreal Engine lifer.",
+      "skills": ["C++", "Unreal Engine", "Level Design"],
+      "projects": [
+        {
+          "slug": "iron-vanguard",
+          "title": "Iron Vanguard",
+          "description": "A squad-based tactical shooter set during a mech uprising on a colonized moon.",
+          "logoUrl": "https://picsum.photos/seed/ironvanguard-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/ironvanguard-banner/1200/400",
+          "engine": "Unreal Engine",
+          "status": "InDevelopment",
+          "visibility": "Public",
+          "genres": ["Shooter", "Strategy"],
+          "quests": [
+            { "title": "Implement squad-command radial menu", "description": "Radial UI for issuing move/hold/attack orders to AI squadmates.", "category": "Programming", "difficulty": "Hard", "status": "Open", "deadlineDaysFromNow": 24, "maxContributors": 1, "skills": ["C++", "Unreal Engine"] },
+            { "title": "Block out mech hangar level", "description": "Greybox the opening hangar-defense level with three defensible chokepoints.", "category": "Design", "difficulty": "Medium", "status": "Claimed", "deadlineDaysFromNow": 17, "maxContributors": 1, "skills": ["Level Design"] },
+            { "title": "Model damaged mech wreck set dressing", "description": "Set of 5 wrecked mech husks for hangar level dressing.", "category": "Art3D", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 21, "maxContributors": 1, "skills": ["3D Modeling"] },
+            { "title": "Sound design for railgun impact FX", "description": "Heavy, metallic impact sounds for the railgun's charged shot.", "category": "Audio", "difficulty": "Easy", "status": "Open", "deadlineDaysFromNow": null, "maxContributors": 1, "skills": ["Sound Design"] },
+            { "title": "Write squad banter barks", "description": "Short combat barks reacting to flanking, low health, and squad wipes.", "category": "Writing", "difficulty": "Easy", "status": "InProgress", "deadlineDaysFromNow": 10, "maxContributors": 1, "skills": ["Dialogue Writing"] }
+          ]
+        },
+        {
+          "slug": "dead-reckoning",
+          "title": "Dead Reckoning",
+          "description": "A survival-horror shooter aboard a derelict deep-space salvage vessel with a very hungry problem.",
+          "logoUrl": "https://picsum.photos/seed/deadreckoning-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/deadreckoning-banner/1200/400",
+          "engine": "Unreal Engine",
+          "status": "Beta",
+          "visibility": "Public",
+          "genres": ["Horror", "Shooter"],
+          "quests": [
+            { "title": "Fix ammo-count desync in co-op", "description": "Ammo counters can desync between host and client after a reload cancel.", "category": "Programming", "difficulty": "Hard", "status": "Claimed", "deadlineDaysFromNow": 4, "maxContributors": 1, "skills": ["C++", "Unreal Engine"] },
+            { "title": "Tune creature AI aggro ranges", "description": "Current aggro ranges make the mid-game creature encounters too punishing.", "category": "Programming", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 15, "maxContributors": 1, "skills": ["C++", "Unreal Engine"] },
+            { "title": "Animate creature ambush lunge", "description": "New lunge attack animation with a telegraphed wind-up.", "category": "Animation", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 18, "maxContributors": 1, "skills": ["VFX Animation"] },
+            { "title": "QA regression pass on cargo bay level", "description": "Full regression test after the recent lighting and AI patch.", "category": "Production", "difficulty": "Easy", "status": "Submitted", "deadlineDaysFromNow": 2, "maxContributors": 2, "skills": ["QA Testing"] },
+            { "title": "Texture pass on rusted hull panels", "description": "PBR textures for corroded hull plating, needs to read well in low light.", "category": "Art3D", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 20, "maxContributors": 1, "skills": ["Texturing"] }
+          ]
+        },
+        {
+          "slug": "fracture-point",
+          "title": "Fracture Point",
+          "description": "A real-time tactics game about commanding fractured factions after an orbital elevator collapse.",
+          "logoUrl": "https://picsum.photos/seed/fracturepoint-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/fracturepoint-banner/1200/400",
+          "engine": "Unreal Engine",
+          "status": "Concept",
+          "visibility": "Private",
+          "genres": ["Strategy"],
+          "quests": [
+            { "title": "Prototype fog-of-war on hex grid", "description": "Line-of-sight based fog of war for the hex tactical grid.", "category": "Programming", "difficulty": "Hard", "status": "Open", "deadlineDaysFromNow": 30, "maxContributors": 1, "skills": ["C++", "Unreal Engine"] },
+            { "title": "Design faction asymmetry doc", "description": "Draft the asymmetric strengths/weaknesses for the three starting factions.", "category": "Design", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 16, "maxContributors": 1, "skills": ["Game Design"] },
+            { "title": "Concept art for faction unit silhouettes", "description": "Silhouette exploration pass to keep the three factions readable at a glance.", "category": "Art2D", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 22, "maxContributors": 1, "skills": ["Concept Art"] },
+            { "title": "Write faction lore primer", "description": "One-page lore primer per faction for the eventual pitch deck.", "category": "Writing", "difficulty": "Easy", "status": "Open", "deadlineDaysFromNow": null, "maxContributors": 1, "skills": ["Narrative Writing"] },
+            { "title": "Set up project management board", "description": "Structure the initial milestone board and task categories for pre-production.", "category": "Production", "difficulty": "Easy", "status": "Accepted", "deadlineDaysFromNow": null, "maxContributors": 1, "skills": ["Project Management"] }
+          ]
+        }
+      ]
+    },
+    {
+      "gitHubId": "1004",
+      "username": "mira_forge",
+      "avatarUrl": "https://i.pravatar.cc/300?img=45",
+      "bio": "3D artist and rigger. I like giving weird creatures believable skeletons and even weirder walk cycles.",
+      "skills": ["3D Modeling", "Character Rigging", "Concept Art"],
+      "projects": [
+        {
+          "slug": "gilded-hollow",
+          "title": "Gilded Hollow",
+          "description": "A narrative RPG about a clockmaker's apprentice uncovering a conspiracy inside a gilded underground city.",
+          "logoUrl": "https://picsum.photos/seed/gildedhollow-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/gildedhollow-banner/1200/400",
+          "engine": "Unity",
+          "status": "InDevelopment",
+          "visibility": "Public",
+          "genres": ["RPG", "Adventure"],
+          "quests": [
+            { "title": "Implement dialogue branching system", "description": "Data-driven dialogue tree system supporting flags and reputation checks.", "category": "Programming", "difficulty": "Hard", "status": "Open", "deadlineDaysFromNow": 27, "maxContributors": 1, "skills": ["C#", "Unity"] },
+            { "title": "Model clockmaker apprentice hero character", "description": "Base mesh and topology for the protagonist, game-ready poly count.", "category": "Art3D", "difficulty": "Hard", "status": "InProgress", "deadlineDaysFromNow": 19, "maxContributors": 1, "skills": ["3D Modeling"] },
+            { "title": "Rig automaton companion NPC", "description": "Mechanical rig with visible gear joints for the automaton companion.", "category": "Animation", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 23, "maxContributors": 1, "skills": ["Character Rigging"] },
+            { "title": "Design gear-based lockpicking minigame", "description": "A minigame themed around aligning clockwork gears to pick locks.", "category": "Design", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 20, "maxContributors": 1, "skills": ["Game Design"] },
+            { "title": "Write conspiracy plot outline for Act 1", "description": "Beat-by-beat outline for the first act's central mystery.", "category": "Writing", "difficulty": "Medium", "status": "Claimed", "deadlineDaysFromNow": 12, "maxContributors": 1, "skills": ["Narrative Writing"] }
+          ]
+        },
+        {
+          "slug": "clockwork-menagerie",
+          "title": "Clockwork Menagerie",
+          "description": "A cozy puzzle game about repairing and befriending mechanical animals in an abandoned toy workshop.",
+          "logoUrl": "https://picsum.photos/seed/clockworkmenagerie-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/clockworkmenagerie-banner/1200/400",
+          "engine": "Godot",
+          "status": "Concept",
+          "visibility": "Public",
+          "genres": ["Puzzle", "Simulation"],
+          "quests": [
+            { "title": "Prototype gear-fitting puzzle mechanic", "description": "Core mechanic: fitting mismatched gears to restore animal automatons.", "category": "Programming", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 21, "maxContributors": 1, "skills": ["GDScript", "Godot"] },
+            { "title": "Concept art for five animal automatons", "description": "Concept sheets for fox, owl, deer, cat, and turtle automatons.", "category": "Art2D", "difficulty": "Medium", "status": "InProgress", "deadlineDaysFromNow": 14, "maxContributors": 1, "skills": ["Concept Art"] },
+            { "title": "Sculpt low-poly fox automaton model", "description": "First automaton model to establish the game's mechanical-creature style.", "category": "Art3D", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 18, "maxContributors": 1, "skills": ["3D Modeling"] },
+            { "title": "Compose cozy workshop ambience loop", "description": "Warm, ticking-clock ambience loop for the workshop hub.", "category": "Audio", "difficulty": "Easy", "status": "Open", "deadlineDaysFromNow": null, "maxContributors": 1, "skills": ["Music Composition"] },
+            { "title": "Draft progression & unlock structure", "description": "Define how repaired automatons unlock new workshop areas.", "category": "Design", "difficulty": "Easy", "status": "Open", "deadlineDaysFromNow": 16, "maxContributors": 1, "skills": ["Game Design"] }
+          ]
+        },
+        {
+          "slug": "ashen-vale",
+          "title": "Ashen Vale",
+          "description": "A moody third-person adventure about a wandering scholar cataloguing the last magical creatures of a dying valley.",
+          "logoUrl": "https://picsum.photos/seed/ashenvale-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/ashenvale-banner/1200/400",
+          "engine": "Unreal Engine",
+          "status": "Beta",
+          "visibility": "Public",
+          "genres": ["Adventure", "Simulation"],
+          "quests": [
+            { "title": "Fix creature-scan camera clipping", "description": "Scan camera clips through foliage when scanning creatures near cliffs.", "category": "Programming", "difficulty": "Medium", "status": "Claimed", "deadlineDaysFromNow": 6, "maxContributors": 1, "skills": ["C++", "Unreal Engine"] },
+            { "title": "Model final creature: the Ashen Stag", "description": "The valley's signature creature, needed for the box art and finale.", "category": "Art3D", "difficulty": "Hard", "status": "Open", "deadlineDaysFromNow": 25, "maxContributors": 1, "skills": ["3D Modeling"] },
+            { "title": "Rig and animate Ashen Stag idle/flee cycles", "description": "Full rig plus idle, alert, and flee animation cycles.", "category": "Animation", "difficulty": "Hard", "status": "Open", "deadlineDaysFromNow": 28, "maxContributors": 1, "skills": ["Character Rigging"] },
+            { "title": "Write scholar's field journal entries", "description": "Journal entries unlocked per catalogued creature, in the scholar's voice.", "category": "Writing", "difficulty": "Easy", "status": "InReview", "deadlineDaysFromNow": 8, "maxContributors": 1, "skills": ["Narrative Writing"] },
+            { "title": "QA pass on creature-scan edge cases", "description": "Test scanning behavior across all biomes and weather states.", "category": "Production", "difficulty": "Easy", "status": "Open", "deadlineDaysFromNow": 11, "maxContributors": 2, "skills": ["QA Testing"] }
+          ]
+        }
+      ]
+    },
+    {
+      "gitHubId": "1005",
+      "username": "code_alchemist",
+      "avatarUrl": "https://i.pravatar.cc/300?img=68",
+      "bio": "Generalist indie dev. I ship small, weird games and write way too many design docs nobody reads.",
+      "skills": ["C#", "Game Design", "Project Management"],
+      "projects": [
+        {
+          "slug": "roguelight",
+          "title": "Roguelight",
+          "description": "A tiny roguelike about a lantern-bearer descending a collapsing mine, one light source at a time.",
+          "logoUrl": "https://picsum.photos/seed/roguelight-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/roguelight-banner/1200/400",
+          "engine": "GameMaker",
+          "status": "Released",
+          "visibility": "Public",
+          "genres": ["Roguelike", "Platformer"],
+          "quests": [
+            { "title": "Add new relic: the Flicker Charm", "description": "Post-launch relic that randomly duplicates a light pulse each floor.", "category": "Programming", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 17, "maxContributors": 1, "skills": ["C#"] },
+            { "title": "Fix seed-sharing desync on daily runs", "description": "Daily-run seeds occasionally produce different mine layouts across platforms.", "category": "Programming", "difficulty": "Hard", "status": "Claimed", "deadlineDaysFromNow": 5, "maxContributors": 1, "skills": ["C#"] },
+            { "title": "Pixel art for two new enemy types", "description": "Cave bat swarm and collapsed-miner enemy sprites, matching existing style.", "category": "Art2D", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 19, "maxContributors": 1, "skills": ["Pixel Art"] },
+            { "title": "Compose new track for the deep-mine biome", "description": "Tenser, lower-tempo variant of the main mine theme for floors 10+.", "category": "Audio", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": null, "maxContributors": 1, "skills": ["Music Composition"] },
+            { "title": "Balance pass on relic drop rates", "description": "Community feedback suggests rare relics are overtuned in frequency.", "category": "Design", "difficulty": "Easy", "status": "Accepted", "deadlineDaysFromNow": null, "maxContributors": 1, "skills": ["Game Design"] }
+          ]
+        },
+        {
+          "slug": "signal-lost",
+          "title": "Signal Lost",
+          "description": "A sandbox puzzle game about rerouting broken satellite signals across a procedurally generated sky.",
+          "logoUrl": "https://picsum.photos/seed/signallost-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/signallost-banner/1200/400",
+          "engine": "Custom Engine",
+          "status": "Concept",
+          "visibility": "Public",
+          "genres": ["Puzzle", "Sandbox"],
+          "quests": [
+            { "title": "Prototype signal-routing node graph", "description": "Core mechanic prototype: connecting satellite nodes with limited cable budget.", "category": "Programming", "difficulty": "Hard", "status": "Open", "deadlineDaysFromNow": 29, "maxContributors": 1, "skills": ["C#"] },
+            { "title": "Design first ten sandbox challenge layouts", "description": "Hand-crafted layouts introducing routing constraints gradually.", "category": "Design", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 22, "maxContributors": 1, "skills": ["Level Design"] },
+            { "title": "UI mockups for the node-graph editor", "description": "Clean, minimal UI for placing and connecting satellite nodes.", "category": "Art2D", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 15, "maxContributors": 1, "skills": ["UI/UX Design"] },
+            { "title": "Sound design for signal connect/disconnect", "description": "Short, satisfying blips and chimes for successful/failed connections.", "category": "Audio", "difficulty": "Easy", "status": "Open", "deadlineDaysFromNow": null, "maxContributors": 1, "skills": ["Sound Design"] },
+            { "title": "Set up milestone roadmap for prototype phase", "description": "Define the six-week prototype milestone plan and success criteria.", "category": "Production", "difficulty": "Easy", "status": "InProgress", "deadlineDaysFromNow": 4, "maxContributors": 1, "skills": ["Project Management"] }
+          ]
+        },
+        {
+          "slug": "harvest-moon-protocol",
+          "title": "Harvest Moon Protocol",
+          "description": "A farming sim with a twist: you're maintaining an automated orbital greenhouse for a dying Earth.",
+          "logoUrl": "https://picsum.photos/seed/harvestmoon-logo/300/300",
+          "bannerUrl": "https://picsum.photos/seed/harvestmoon-banner/1200/400",
+          "engine": "Unity",
+          "status": "InDevelopment",
+          "visibility": "Public",
+          "genres": ["Simulation", "Strategy"],
+          "quests": [
+            { "title": "Implement crop-rotation automation logic", "description": "Automation system letting players script simple crop-rotation rules.", "category": "Programming", "difficulty": "Hard", "status": "Open", "deadlineDaysFromNow": 26, "maxContributors": 1, "skills": ["C#", "Unity"] },
+            { "title": "Fix greenhouse pressure-leak edge case", "description": "Pressure simulation can go negative when multiple leaks occur simultaneously.", "category": "Programming", "difficulty": "Medium", "status": "Claimed", "deadlineDaysFromNow": 7, "maxContributors": 1, "skills": ["C#", "Unity"] },
+            { "title": "Model modular greenhouse dome pieces", "description": "Snap-together modular dome, airlock, and hydroponic bay pieces.", "category": "Art3D", "difficulty": "Medium", "status": "Open", "deadlineDaysFromNow": 20, "maxContributors": 1, "skills": ["3D Modeling"] },
+            { "title": "Write mission-control radio flavor text", "description": "Short flavor barks from mission control reacting to harvest milestones.", "category": "Writing", "difficulty": "Easy", "status": "Open", "deadlineDaysFromNow": null, "maxContributors": 1, "skills": ["Dialogue Writing"] },
+            { "title": "Playtest full growth-cycle loop", "description": "End-to-end playtest of planting through harvest and resupply loop.", "category": "Production", "difficulty": "Easy", "status": "Submitted", "deadlineDaysFromNow": 3, "maxContributors": 2, "skills": ["QA Testing"] }
+          ]
+        }
+      ]
+    }
+  ]
+}
